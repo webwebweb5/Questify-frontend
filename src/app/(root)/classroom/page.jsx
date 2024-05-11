@@ -1,4 +1,4 @@
-import ClassroomView from 'src/sections/classroom/view';
+import ClassroomListView from 'src/sections/classroom/view/classroom-list-view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <ClassroomView />;
+  return <ClassroomListView />;
 }
