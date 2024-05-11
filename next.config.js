@@ -1,5 +1,5 @@
 module.exports = {
-  trailingSlash: true,
+  trailingSlash: false,
   modularizeImports: {
     '@mui/icons-material': {
       transform: '@mui/icons-material/{{member}}',

@@ -6,6 +6,6 @@ export const metadata = {
   title: 'Questify | Dashboard',
 };
 
-export default function Page() {
+export default function DashboardPage() {
   return <DashboardView />;
 }

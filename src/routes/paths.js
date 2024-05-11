@@ -20,4 +20,7 @@ export const paths = {
     root: '/',
     classroom: '/classroom',
   },
+  classroom: {
+    new: '/classroom/new',
+  },
 };

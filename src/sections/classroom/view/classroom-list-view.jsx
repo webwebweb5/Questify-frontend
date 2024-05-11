@@ -4,6 +4,7 @@ import { Stack, Button } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
+import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { _classroom } from 'src/_mock';
@@ -24,7 +25,7 @@ export default function ClassroomView() {
         <Typography variant="h4"> Classroom </Typography>
         <Button
           component={RouterLink}
-          href=""
+          href={paths.classroom.new}
           variant="contained"
           color="primary"
           startIcon={<Iconify icon="mingcute:add-line" />}
