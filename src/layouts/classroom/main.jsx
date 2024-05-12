@@ -57,6 +57,9 @@ export default function Main({ children, sx, ...other }) {
             width: `calc(100% - ${NAV.W_MINI}px)`,
           }),
         }),
+        ...(!lgUp && {
+          mt: -4,
+        }),
         ...sx,
       }}
       {...other}

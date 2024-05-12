@@ -26,7 +26,7 @@ function NavHorizontal() {
   return (
     <Stack
       sx={{
-        top: HEADER.H_DESKTOP_OFFSET,
+        top: HEADER.H_MOBILE_OFFSET,
         borderBottom: `dashed 1px ${theme.palette.divider}`,
       }}
     >
