@@ -6,6 +6,6 @@ export const metadata = {
   title: 'Questify | Classroom',
 };
 
-export default function ClassroomPage() {
+export default function ClassroomListPage() {
   return <ClassroomListView />;
 }

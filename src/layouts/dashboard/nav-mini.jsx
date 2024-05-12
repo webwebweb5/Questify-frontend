@@ -10,7 +10,7 @@ import { NavSectionMini } from 'src/components/nav-section';
 
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
-import NavToggleButton from '../common/nav-toggle-button';
+// import NavToggleButton from '../common/nav-toggle-button';
 
 // ----------------------------------------------------------------------
 
@@ -26,12 +26,12 @@ export default function NavMini() {
         width: { lg: NAV.W_MINI },
       }}
     >
-      <NavToggleButton
+      {/* <NavToggleButton
         sx={{
           top: 22,
           left: NAV.W_MINI - 12,
         }}
-      />
+      /> */}
 
       <Stack
         sx={{

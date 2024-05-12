@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
 
+import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { fDate } from 'src/utils/format-time';
@@ -23,7 +24,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 export default function ClassroomItem({ classroom }) {
   const popover = usePopover();
 
-  const { title, createdAt, experience } = classroom;
+  const { id, title, createdAt, experience } = classroom;
 
   return (
     <>
@@ -40,7 +41,7 @@ export default function ClassroomItem({ classroom }) {
           <ListItemText
             sx={{ mb: 1 }}
             primary={
-              <Link component={RouterLink} href="#" color="inherit">
+              <Link component={RouterLink} href={paths.classroom.general(id)} color="inherit">
                 {title}
               </Link>
             }

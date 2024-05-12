@@ -16,7 +16,7 @@ import ClassroomList from '../classroom-list';
 
 // ----------------------------------------------------------------------
 
-export default function ClassroomView() {
+export default function ClassroomListView() {
   const settings = useSettingsContext();
 
   return (

@@ -20,7 +20,15 @@ export const paths = {
     root: '/',
     classroom: '/classroom',
   },
+  // CLASSROOM
   classroom: {
+    root: '/classroom',
     new: '/classroom/new',
+    details: (id) => `/classroom/${id}`,
+    general: (id) => `/classroom/${id}/general`,
+    assignment: (id) => `/classroom/${id}/assignment`,
+    file: (id) => `/classroom/${id}/file`,
+    members: (id) => `/classroom/${id}/members`,
+    grade: (id) => `/classroom/${id}/grade`,
   },
 };

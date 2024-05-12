@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
+import { Avatar } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 
@@ -10,17 +11,15 @@ import { usePathname } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 
-import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { NavSectionVertical } from 'src/components/nav-section';
 
-import { NAV } from '../config-layout';
+import { NAV, HEADER } from '../config-layout';
 import { useNavData } from './config-navigation';
-// import NavToggleButton from '../common/nav-toggle-button';
 
 // ----------------------------------------------------------------------
 
-export default function NavVertical({ openNav, onCloseNav }) {
+export default function NavVerticalClassroom({ openNav, onCloseNav }) {
   const { user } = useMockedUser();
 
   const pathname = usePathname();
@@ -47,7 +46,14 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
+      <Avatar
+        alt="avatar"
+        src=""
+        variant="rounded"
+        sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 4 }}
+      >
+        C
+      </Avatar>
 
       <NavSectionVertical
         data={navData}
@@ -67,11 +73,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
         width: { lg: NAV.W_VERTICAL },
       }}
     >
-      {/* <NavToggleButton /> */}
-
       {lgUp ? (
         <Stack
           sx={{
+            top: HEADER.H_MOBILE,
             height: 1,
             position: 'fixed',
             width: NAV.W_VERTICAL,
@@ -97,7 +102,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
   );
 }
 
-NavVertical.propTypes = {
+NavVerticalClassroom.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
 };
