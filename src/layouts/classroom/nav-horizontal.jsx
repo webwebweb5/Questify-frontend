@@ -28,6 +28,7 @@ function NavHorizontal() {
       sx={{
         top: HEADER.H_MOBILE_OFFSET,
         borderBottom: `dashed 1px ${theme.palette.divider}`,
+        mb: 2,
       }}
     >
       <Toolbar

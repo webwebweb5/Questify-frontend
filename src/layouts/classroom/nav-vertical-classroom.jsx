@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
-import { Avatar } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
+import { Avatar, Typography } from '@mui/material';
 
 import { usePathname } from 'src/routes/hooks';
 
@@ -50,10 +50,14 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
         alt="avatar"
         src=""
         variant="rounded"
-        sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 4 }}
+        sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 3 }}
       >
         C
       </Avatar>
+
+      <Typography variant="h6" sx={{ mt: 1, ml: 3, mr: 1 }}>
+        Introduction to Computer Science
+      </Typography>
 
       <NavSectionVertical
         data={navData}
