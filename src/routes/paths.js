@@ -27,6 +27,7 @@ export const paths = {
     details: (id) => `/classroom/${id}`,
     general: (id) => `/classroom/${id}/general`,
     assignment: (id) => `/classroom/${id}/assignment`,
+    assignmentNew: (id) => `/classroom/${id}/assignment/new`,
     file: (id) => `/classroom/${id}/file`,
     members: (id) => `/classroom/${id}/members`,
     grade: (id) => `/classroom/${id}/grade`,
