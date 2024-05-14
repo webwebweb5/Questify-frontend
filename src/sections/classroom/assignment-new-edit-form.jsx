@@ -6,8 +6,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import { Tooltip } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Unstable_Grid2';
+import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
@@ -15,6 +17,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
+import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 
@@ -109,11 +112,32 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
           {!mdUp && <CardHeader title="Details" />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            <RHFTextField name="topic" label="Classroom Topic" />
+            <RHFTextField
+              name="topic"
+              label="Assignment Topic"
+              placeholder="e.g. Conditional Programming"
+            />
 
-            <RHFTextField name="description" label="Description" multiline rows={4} />
+            <RHFTextField
+              name="description"
+              label="Description"
+              multiline
+              rows={4}
+              placeholder="e.g. if/else and switch case"
+            />
 
-            <RHFSwitch name="isRestrict" label="Restriction" />
+            <Stack direction="row">
+              <RHFSwitch name="isRestrict" label="Restriction" />
+              <Tooltip
+                title="Prevent students from copying and pasting code!"
+                placement="top"
+                arrow
+              >
+                <IconButton color="inherit" sx={{ ml: -1 }}>
+                  <Iconify icon="ph:question" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
 
             <AssignmentNewEditDate />
           </Stack>

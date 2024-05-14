@@ -88,9 +88,19 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
           {!mdUp && <CardHeader title="Details" />}
 
           <Stack spacing={3} sx={{ p: 3 }}>
-            <RHFTextField name="name" label="Classroom Name" />
+            <RHFTextField
+              name="name"
+              label="Classroom Name"
+              placeholder="e.g. 953881 - Software Engineer"
+            />
 
-            <RHFTextField name="description" label="Description" multiline rows={4} />
+            <RHFTextField
+              name="description"
+              label="Description"
+              multiline
+              rows={4}
+              placeholder="e.g. Fundamental of Software Engineer"
+            />
           </Stack>
         </Card>
       </Grid>
