@@ -16,7 +16,7 @@ import AssignmentList from '../assignment-list';
 
 const _assignments = [
   {
-    id: '1',
+    id: 'e99f09a7-dd88-a1',
     labTitle: 'Conditional Programming',
     description: 'if/else',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
@@ -24,7 +24,7 @@ const _assignments = [
     endTime: 'Sun May 12 2024 22:12:02 GMT+0700 (Indochina Time)',
   },
   {
-    id: '2',
+    id: 'e99f09a7-dd88-a2',
     labTitle: 'Loop Structures',
     description: 'for and while loops',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
@@ -32,7 +32,7 @@ const _assignments = [
     endTime: 'Mon May 13 2024 12:00:00 GMT+0700 (Indochina Time)',
   },
   {
-    id: '3',
+    id: 'e99f09a7-dd88-a3',
     labTitle: 'Data Structures',
     description: 'Arrays and Objects',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
@@ -40,7 +40,7 @@ const _assignments = [
     endTime: 'Tue May 14 2024 15:30:00 GMT+0700 (Indochina Time)',
   },
   {
-    id: '4',
+    id: 'e99f09a7-dd88-a4',
     labTitle: 'Function Definitions',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
     description: 'Creating and using functions',
@@ -48,7 +48,7 @@ const _assignments = [
     endTime: 'Wed May 15 2024 11:00:00 GMT+0700 (Indochina Time)',
   },
   {
-    id: '5',
+    id: 'e99f09a7-dd88-a5',
     labTitle: 'Asynchronous JavaScript',
     description: 'Promises and async/await',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
@@ -56,7 +56,7 @@ const _assignments = [
     endTime: 'Thu May 16 2024 16:00:00 GMT+0700 (Indochina Time)',
   },
   {
-    id: '6',
+    id: 'e99f09a7-dd88-a6',
     labTitle: 'API Integration',
     description: 'Fetching and displaying data',
     professor: 'Asst. Prof. Dr. Pathathai Na Lumpoon',

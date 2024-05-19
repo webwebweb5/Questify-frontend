@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useParams, useRouter } from 'next/navigation';
 
 import {
   Box,
@@ -13,6 +14,7 @@ import {
   ListItemText,
 } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { fDate } from 'src/utils/format-time';
@@ -23,9 +25,13 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function LabItem({ lab }) {
-  const { labTitle, time } = lab;
+  const { id, labTitle, time } = lab;
 
   const popover = usePopover();
+
+  const router = useRouter();
+
+  const params = useParams();
 
   return (
     <>
@@ -108,6 +114,7 @@ export default function LabItem({ lab }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
+            router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, id));
           }}
         >
           <Iconify icon="solar:pen-bold" />

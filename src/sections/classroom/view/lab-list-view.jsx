@@ -15,19 +15,19 @@ import LabList from '../lab-list';
 
 const _labs = [
   {
-    id: '1',
+    id: 'e99f09a7-dd88-l1',
     labTitle: 'calculate triangle space',
     description: '-',
     time: 'Sun May 12 2024 21:12:02 GMT+0700 (Indochina Time)',
   },
   {
-    id: '2',
+    id: 'e99f09a7-dd88-l2',
     labTitle: 'calculate tax',
     description: '-',
     time: 'Mon May 13 2024 10:00:00 GMT+0700 (Indochina Time)',
   },
   {
-    id: '3',
+    id: 'e99f09a7-dd88-l3',
     labTitle: 'calculate BMI',
     description: 'Arrays and Objects',
     time: 'Tue May 14 2024 13:30:00 GMT+0700 (Indochina Time)',
