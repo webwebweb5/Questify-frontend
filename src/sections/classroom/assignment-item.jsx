@@ -1,16 +1,18 @@
 import PropTypes from 'prop-types';
+import { useParams } from 'next/navigation';
 
 import {
   Card,
-  Avatar,
-  IconButton,
   Link,
-  ListItemText,
-  MenuItem,
   Stack,
+  Avatar,
+  MenuItem,
   useTheme,
+  IconButton,
+  ListItemText,
 } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { fDate, fDateTime } from 'src/utils/format-time';
@@ -24,7 +26,9 @@ export default function AssignmentItem({ assignment }) {
 
   const popover = usePopover();
 
-  const { labTitle, description, professor, startTime, endTime } = assignment;
+  const params = useParams();
+
+  const { id, labTitle, description, professor, startTime, endTime } = assignment;
   return (
     <Stack component={Card} direction="row">
       <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
@@ -62,7 +66,11 @@ export default function AssignmentItem({ assignment }) {
             }}
           >
             <Stack spacing={1} flexGrow={1}>
-              <Link color="inherit" component={RouterLink} href="">
+              <Link
+                color="inherit"
+                component={RouterLink}
+                href={paths.classroom.assignmentId(params.cid, id)}
+              >
                 <TextMaxLine variant="subtitle1" line={2}>
                   {labTitle}
                 </TextMaxLine>

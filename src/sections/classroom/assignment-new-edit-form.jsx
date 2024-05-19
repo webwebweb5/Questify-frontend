@@ -151,7 +151,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       {mdUp && <Grid md={4} />}
       <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'flex-end' }}>
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-          {!currentAssignment ? 'Create Classroom' : 'Save Changes'}
+          {!currentAssignment ? 'Create Assignment' : 'Save Changes'}
         </LoadingButton>
       </Grid>
     </>

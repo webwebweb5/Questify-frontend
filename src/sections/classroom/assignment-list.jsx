@@ -4,6 +4,7 @@ import { Stack } from '@mui/material';
 import Pagination, { paginationClasses } from '@mui/material/Pagination';
 
 import EmptyContent from 'src/components/empty-content';
+
 import AssignmentItem from './assignment-item';
 
 // ----------------------------------------------------------------------
