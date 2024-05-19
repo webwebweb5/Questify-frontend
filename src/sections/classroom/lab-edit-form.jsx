@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Grid, Card, Stack, Divider, CardHeader, Typography } from '@mui/material';
 
+import Markdown from 'src/components/markdown';
 import { RHFTextField } from 'src/components/hook-form';
 import RHFEditor from 'src/components/hook-form/rhf-editor';
 import FormProvider from 'src/components/hook-form/form-provider';
@@ -23,6 +24,7 @@ export default function LabEditForm({ currentLab }) {
   const defaultValues = useMemo(
     () => ({
       topic: currentLab?.topic || '',
+      description: currentLab?.description || '',
     }),
     [currentLab]
   );
@@ -35,8 +37,12 @@ export default function LabEditForm({ currentLab }) {
   const {
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const watchedTopic = watch('topic');
+  const watchedDesc = watch('description');
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -54,7 +60,7 @@ export default function LabEditForm({ currentLab }) {
       <Grid container>
         <Grid item xs={12} md={6}>
           <Card>
-            <CardHeader title="Details" />
+            <CardHeader title="(Lab) Calculate Tax" />
 
             <Stack spacing={3} sx={{ p: 3 }}>
               <Stack spacing={1.5}>
@@ -62,13 +68,8 @@ export default function LabEditForm({ currentLab }) {
                 <RHFTextField name="topic" placeholder="e.g. calculate area of triangle" />
               </Stack>
 
-              {/* <Stack spacing={1.5}>
-                <Typography variant="subtitle2">Instruction</Typography>
-                <RHFTextField name="instruction" label="Instruction" multiline rows={4} />
-              </Stack> */}
-
               <Stack spacing={1.5}>
-                <Typography variant="subtitle2">Content</Typography>
+                <Typography variant="subtitle2">Problem statement</Typography>
                 <RHFEditor simple name="description" />
               </Stack>
             </Stack>
@@ -78,7 +79,12 @@ export default function LabEditForm({ currentLab }) {
           <Divider orientation="vertical" sx={{ borderStyle: 'dashed', mx: 2 }} />
         </Grid>
         <Grid item xs={12} md={5}>
-          Preview
+          <Card>
+            <CardHeader title={watchedTopic || 'Header...'} />
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Markdown children={watchedDesc || '<p>Instruction...</p>'} />
+            </Stack>
+          </Card>
         </Grid>
       </Grid>
       <LoadingButton

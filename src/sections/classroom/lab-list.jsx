@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import EmptyContent from 'src/components/empty-content';
 
@@ -30,12 +30,12 @@ export default function LabList({ labs }) {
         ))}
       </Box>
 
-      {/* <Button variant="contained" sx={{ py: 1.5, mr: 2 }}>
-        Add version (Manual)
+      <Button variant="contained" sx={{ py: 1.5, mr: 2 }}>
+        Add New Lab (Manual)
       </Button>
       <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
-        Add version (AI gen)
-      </Button> */}
+        Add New Lab (AI gen)
+      </Button>
     </>
   );
 }
