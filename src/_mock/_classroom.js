@@ -32,6 +32,7 @@ export const _classroom = [...Array(12)].map((_, index) => {
     id: _mock.id(index),
     experience,
     title: classroomTitle[index],
+    description: 'This is classroom description...',
     createdAt: _mock.time(index),
   };
 });

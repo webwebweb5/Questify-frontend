@@ -29,13 +29,13 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewClassroomSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
+    title: Yup.string().required('Classroom title is required'),
     description: Yup.string().required('Description is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: '',
+      title: '',
       description: '',
     }),
     []
@@ -54,7 +54,7 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
 
   useEffect(() => {
     if (currentClassroom) {
-      reset({ name: currentClassroom.name, description: currentClassroom.description });
+      reset({ title: currentClassroom.title, description: currentClassroom.description });
     }
   }, [currentClassroom, reset]);
 
@@ -63,8 +63,8 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentClassroom ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.classroom);
       console.info('DATA', data);
+      router.push(paths.dashboard.classroom);
     } catch (error) {
       console.error(error);
     }
@@ -89,7 +89,7 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField
-              name="name"
+              name="title"
               label="Classroom Name"
               placeholder="e.g. 953881 - Software Engineer"
             />

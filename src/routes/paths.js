@@ -24,6 +24,7 @@ export const paths = {
   classroom: {
     root: '/classroom',
     new: '/classroom/new',
+    edit: (id) => `/classroom/edit/${id}`,
     details: (id) => `/classroom/${id}`,
     general: (id) => `/classroom/${id}/general`,
     assignment: (id) => `/classroom/${id}/assignment`,

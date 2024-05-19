@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/navigation';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -25,6 +26,8 @@ export default function ClassroomItem({ classroom }) {
   const popover = usePopover();
 
   const { id, title, createdAt, experience } = classroom;
+
+  const router = useRouter();
 
   return (
     <>
@@ -107,15 +110,7 @@ export default function ClassroomItem({ classroom }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:eye-bold" />
-          View
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
+            router.push(paths.classroom.edit(id));
           }}
         >
           <Iconify icon="solar:pen-bold" />
