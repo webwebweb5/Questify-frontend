@@ -62,7 +62,7 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
         startIcon={<Iconify icon="carbon:chevron-left" />}
         sx={{ mt: 3, width: 'fit-content' }}
       >
-        All Labs
+        All Classroom
       </Button>
 
       <Avatar

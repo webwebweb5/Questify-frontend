@@ -13,21 +13,21 @@ import AssignmentNewEditForm from '../assignment-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function AssignmentCreateView() {
+export default function AssignmentEditView() {
   const settings = useSettingsContext();
 
   const params = useParams();
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create Assignment"
+        heading="Edit Assignment"
         links={[
           {
             name: 'Assignment',
             href: paths.classroom.assignment(params.cid),
           },
-          { name: 'Create assignment' },
+          { name: 'Edit assignment' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

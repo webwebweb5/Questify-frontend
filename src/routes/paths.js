@@ -29,6 +29,7 @@ export const paths = {
     general: (id) => `/classroom/${id}/general`,
     assignment: (id) => `/classroom/${id}/assignment`,
     assignmentNew: (id) => `/classroom/${id}/assignment/new`,
+    assignmentEdit: (cid, aid) => `/classroom/${cid}/assignment/edit/${aid}`,
     assignmentId: (cid, aid) => `/classroom/${cid}/assignment/${aid}`,
     assignmentLabEdit: (cid, aid, lid) => `/classroom/${cid}/assignment/${aid}/edit/${lid}`,
     file: (id) => `/classroom/${id}/file`,

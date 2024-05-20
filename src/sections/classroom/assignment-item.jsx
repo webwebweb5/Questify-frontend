@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import {
   Card,
@@ -27,6 +27,8 @@ export default function AssignmentItem({ assignment }) {
   const popover = usePopover();
 
   const params = useParams();
+
+  const router = useRouter();
 
   const { id, labTitle, description, professor, startTime, endTime } = assignment;
   return (
@@ -97,6 +99,7 @@ export default function AssignmentItem({ assignment }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
+            router.push(paths.classroom.assignmentEdit(params.cid, id));
           }}
         >
           <Iconify icon="solar:pen-bold" />
