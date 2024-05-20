@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { fDate } from 'src/utils/format-time';
+// import { fDate } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -25,7 +25,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 export default function ClassroomItem({ classroom }) {
   const popover = usePopover();
 
-  const { id, title, createdAt, experience } = classroom;
+  const { id, professor, title, description, isActive } = classroom;
 
   const router = useRouter();
 
@@ -48,7 +48,8 @@ export default function ClassroomItem({ classroom }) {
                 {title}
               </Link>
             }
-            secondary={`Joined date: ${fDate(createdAt)}`}
+            secondary={description}
+            // secondary={`Joined date: ${fDate(createdAt)}`}
             primaryTypographyProps={{
               typography: 'subtitle1',
             }}
@@ -76,11 +77,11 @@ export default function ClassroomItem({ classroom }) {
         <Box rowGap={1.5} display="grid" gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
           {[
             {
-              label: experience,
+              label: `isActive: ${isActive.toString()}`,
               icon: <Iconify width={16} icon="carbon:skill-level-basic" sx={{ flexShrink: 0 }} />,
             },
             {
-              label: 'Asst. Prof. Dr. Pathathai Na Lumpoon',
+              label: `Professor Id: ${professor.professorId}`,
               icon: <Iconify width={16} icon="solar:user-rounded-bold" sx={{ flexShrink: 0 }} />,
             },
           ].map((item) => (
