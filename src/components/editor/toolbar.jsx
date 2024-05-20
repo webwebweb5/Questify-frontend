@@ -93,6 +93,11 @@ export default function Toolbar({ id, simple, ...other }) {
           <button type="button" className="ql-video" />
         </div> */}
 
+        <div className="ql-formats">
+          <button type="button" className="ql-code-block" />
+          <button type="button" className="ql-blockquote" />
+        </div>
+
         {/* <div className="ql-formats">
           {!simple && <button type="button" className="ql-formula" />}
           <button type="button" className="ql-clean" />

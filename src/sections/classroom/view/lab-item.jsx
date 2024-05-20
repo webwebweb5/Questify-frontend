@@ -24,7 +24,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function LabItem({ lab }) {
+export default function LabItem({ lab, setPopupOpen }) {
   const { id, topic, time } = lab;
 
   const popover = usePopover();
@@ -41,10 +41,6 @@ export default function LabItem({ lab }) {
         </IconButton>
 
         <Stack sx={{ p: 3, pb: 2 }}>
-          {/* <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
-            {title?.charAt(0).toUpperCase()}
-          </Avatar> */}
-
           <ListItemText
             sx={{ mb: 1 }}
             primary={
@@ -99,6 +95,7 @@ export default function LabItem({ lab }) {
             color="info"
             sx={{ py: 1.5 }}
             startIcon={<Iconify icon="carbon:information-filled" />}
+            onClick={() => setPopupOpen(true)}
           >
             Info
           </Button>
@@ -139,4 +136,5 @@ export default function LabItem({ lab }) {
 
 LabItem.propTypes = {
   lab: PropTypes.object,
+  setPopupOpen: PropTypes.func,
 };
