@@ -32,6 +32,30 @@ export const createClassroom = async (data) => {
 
 // ----------------------------------------------------------------------
 
+export const updateClassroom = async (classroomId, data) => {
+  try {
+    const res = await axiosInstance.put(`/api/v1/classroom?classroomId=${classroomId}`, data);
+    return res.data;
+  } catch (error) {
+    console.error('Update Classroom Error:', error);
+    throw error;
+  }
+};
+
+// ----------------------------------------------------------------------
+
+export const deleteClassroom = async (classroomId) => {
+  try {
+    const res = await axiosInstance.delete(`/api/v1/classroom?classroomId=${classroomId}`);
+    return res.data;
+  } catch (error) {
+    console.error('Delete Classroom Error:', error);
+    throw error;
+  }
+};
+
+// ----------------------------------------------------------------------
+
 export const endpoints = {
   auth: {
     me: '/api/auth/me',
@@ -41,5 +65,6 @@ export const endpoints = {
   classroom: {
     list: '/api/v1/classroom/',
     create: '/api/v1/classroom/',
+    details: '/api/v1/classroom',
   },
 };

@@ -13,12 +13,34 @@ export function useGetClassroom() {
   const memoizedValue = useMemo(
     () => ({
       classroom: data?.data || [],
-      productsLoading: isLoading,
-      productsError: error,
-      productsValidating: isValidating,
+      classroomLoading: isLoading,
+      classroomError: error,
+      classroomValidating: isValidating,
     }),
     [data?.data, error, isLoading, isValidating]
   );
 
   return memoizedValue;
 }
+
+// ----------------------------------------------------------------------
+
+export function useGetClassroomById(classroomId) {
+  const URL = classroomId ? [endpoints.classroom.details, { params: { classroomId } }] : '';
+
+  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
+
+  const memoizedValue = useMemo(
+    () => ({
+      classroom: data?.data || {},
+      classroomLoading: isLoading,
+      classroomError: error,
+      classroomValidating: isValidating,
+    }),
+    [data?.data, error, isLoading, isValidating]
+  );
+
+  return memoizedValue;
+}
+
+// ----------------------------------------------------------------------

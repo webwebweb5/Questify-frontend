@@ -1,21 +1,35 @@
+import { mutate } from 'swr';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import { LoadingButton } from '@mui/lab';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-// import { fDate } from 'src/utils/format-time';
+import { useBoolean } from 'src/hooks/use-boolean';
+
+import { endpoints, deleteClassroom } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -28,6 +42,59 @@ export default function ClassroomItem({ classroom }) {
   const { classroomId, professor, title, description, isActive } = classroom;
 
   const router = useRouter();
+
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const loading = useBoolean(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const OnDeleteClassroom = async () => {
+    try {
+      loading.onTrue();
+      await deleteClassroom(classroomId);
+      enqueueSnackbar('Delete success!');
+      mutate(endpoints.classroom.list);
+      setPopupOpen(false);
+    } catch (error) {
+      loading.onFalse();
+      enqueueSnackbar('Delete failed!', {
+        variant: 'error',
+      });
+      console.error('Failed to delete Classroom:', error);
+      setPopupOpen(false);
+    }
+    loading.onFalse();
+  };
+
+  const renderDelete = (
+    <Dialog fullWidth maxWidth="sm" open={popupOpen} onClose={() => setPopupOpen(false)}>
+      <DialogTitle id="crop-dialog-title">Delete Confirmation</DialogTitle>
+      <DialogContent dividers style={{ position: 'relative' }}>
+        <DialogContentText id="alert-dialog-description">
+          Confirm to Delete Classroom: {title}
+        </DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => setPopupOpen(false)}
+          startIcon={<Iconify icon="eva:close-outline" />}
+        >
+          Cancel
+        </Button>
+        <LoadingButton
+          color="error"
+          variant="contained"
+          onClick={OnDeleteClassroom}
+          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+          loading={loading.value}
+        >
+          Delete
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <>
@@ -124,7 +191,7 @@ export default function ClassroomItem({ classroom }) {
 
         <MenuItem
           onClick={() => {
-            popover.onClose();
+            setPopupOpen(true);
           }}
           sx={{ color: 'error.main' }}
         >
@@ -132,6 +199,8 @@ export default function ClassroomItem({ classroom }) {
           Delete
         </MenuItem>
       </CustomPopover>
+
+      {renderDelete}
     </>
   );
 }

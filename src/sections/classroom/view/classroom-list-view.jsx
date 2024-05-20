@@ -21,8 +21,6 @@ export default function ClassroomListView() {
 
   const { classroom } = useGetClassroom();
 
-  // console.log(classroom);
-
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Stack direction="row" justifyContent="space-between">

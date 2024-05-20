@@ -16,10 +16,10 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { createClassroom } from 'src/utils/axios';
+import { createClassroom, updateClassroom } from 'src/utils/axios';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +39,7 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
     () => ({
       title: '',
       description: '',
+      isActive: false,
     }),
     []
   );
@@ -56,17 +57,24 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
 
   useEffect(() => {
     if (currentClassroom) {
-      reset({ title: currentClassroom.title, description: currentClassroom.description });
+      reset({
+        title: currentClassroom.title,
+        description: currentClassroom.description,
+        isActive: currentClassroom.isActive,
+      });
     }
   }, [currentClassroom, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 500));
-      await createClassroom(data);
+      if (currentClassroom) {
+        await updateClassroom(currentClassroom.classroomId, data);
+        enqueueSnackbar('Update success!');
+      } else {
+        await createClassroom(data);
+        enqueueSnackbar('Create success!');
+      }
       reset();
-      enqueueSnackbar(currentClassroom ? 'Update success!' : 'Create success!');
-      // console.info('DATA', data);
       router.push(paths.dashboard.classroom);
     } catch (error) {
       console.error(error);
@@ -104,6 +112,8 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
               rows={4}
               placeholder="e.g. Fundamental of Software Engineer"
             />
+
+            <RHFSwitch name="isActive" label="Publish" />
           </Stack>
         </Card>
       </Grid>
@@ -133,5 +143,10 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
 }
 
 ClassroomNewEditForm.propTypes = {
-  currentClassroom: PropTypes.object,
+  currentClassroom: PropTypes.shape({
+    classroomId: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    isActive: PropTypes.bool,
+  }),
 };

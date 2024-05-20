@@ -1,10 +1,12 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+
 import { Container } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 
-import { _classroom } from 'src/_mock';
+import { useGetClassroomById } from 'src/api/classroom';
 
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -15,6 +17,11 @@ import ClassroomNewEditForm from '../classroom-new-edit-form';
 
 export default function ClassroomEditView() {
   const settings = useSettingsContext();
+
+  const params = useParams();
+
+  const { classroom } = useGetClassroomById(params.cid);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -35,7 +42,7 @@ export default function ClassroomEditView() {
         }}
       />
 
-      <ClassroomNewEditForm currentClassroom={_classroom[0]} />
+      <ClassroomNewEditForm currentClassroom={classroom} />
     </Container>
   );
 }

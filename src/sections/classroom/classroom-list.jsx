@@ -11,7 +11,7 @@ import ClassroomItem from './classroom-item';
 
 export default function ClassroomList({ classrooms }) {
   if (classrooms.length === 0) {
-    return <EmptyContent filled title="No Data" sx={{ my: 3, py: 10 }} />;
+    return <EmptyContent filled title="No Classroom" sx={{ my: 3, py: 10 }} />;
   }
 
   return (
