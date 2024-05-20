@@ -1,6 +1,5 @@
 'use client';
 
-import PropTypes from 'prop-types';
 import { useParams } from 'next/navigation';
 
 import Container from '@mui/material/Container';
@@ -13,22 +12,13 @@ import LabNewEditForm from '../lab-edit-form';
 
 // ----------------------------------------------------------------------
 
-const _labs = {
-  id: 'e99f09a7-dd88-l2',
-  topic: 'calculate tax',
-  description: '<p>Do something...</p>',
-  time: 'Mon May 13 2024 10:00:00 GMT+0700 (Indochina Time)',
-};
-
-// ----------------------------------------------------------------------
-
-export default function LabEditView({ lab }) {
+export default function LabCreateView() {
   const params = useParams();
 
   return (
     <Container maxWidth={false}>
       <CustomBreadcrumbs
-        heading="Edit Lab"
+        heading="Create Lab"
         links={[
           {
             name: 'Conditional Programming (All lab)',
@@ -40,11 +30,8 @@ export default function LabEditView({ lab }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <LabNewEditForm currentLab={_labs} />
+
+      <LabNewEditForm />
     </Container>
   );
 }
-
-LabEditView.propTypes = {
-  lab: PropTypes.object,
-};

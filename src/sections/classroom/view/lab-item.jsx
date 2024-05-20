@@ -25,7 +25,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function LabItem({ lab }) {
-  const { id, labTitle, time } = lab;
+  const { id, topic, time } = lab;
 
   const popover = usePopover();
 
@@ -49,7 +49,7 @@ export default function LabItem({ lab }) {
             sx={{ mb: 1 }}
             primary={
               <Link component={RouterLink} href="" color="inherit">
-                {labTitle}
+                {topic}
               </Link>
             }
             secondary={`Due to ${fDate(time)}`}

@@ -13,7 +13,7 @@ import { RHFTextField } from 'src/components/hook-form';
 import RHFEditor from 'src/components/hook-form/rhf-editor';
 import FormProvider from 'src/components/hook-form/form-provider';
 
-export default function LabEditForm({ currentLab }) {
+export default function LabNewEditForm({ currentLab }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewLabSchema = Yup.object().shape({
@@ -60,7 +60,7 @@ export default function LabEditForm({ currentLab }) {
       <Grid container>
         <Grid item xs={12} md={6}>
           <Card>
-            <CardHeader title="(Lab) Calculate Tax" />
+            <CardHeader title="Description" />
 
             <Stack spacing={3} sx={{ p: 3 }}>
               <Stack spacing={1.5}>
@@ -100,6 +100,6 @@ export default function LabEditForm({ currentLab }) {
   );
 }
 
-LabEditForm.propTypes = {
+LabNewEditForm.propTypes = {
   currentLab: PropTypes.object,
 };
