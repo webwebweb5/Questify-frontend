@@ -16,6 +16,8 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
+import { createClassroom } from 'src/utils/axios';
+
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
@@ -60,10 +62,11 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      await createClassroom(data);
       reset();
       enqueueSnackbar(currentClassroom ? 'Update success!' : 'Create success!');
-      console.info('DATA', data);
+      // console.info('DATA', data);
       router.push(paths.dashboard.classroom);
     } catch (error) {
       console.error(error);

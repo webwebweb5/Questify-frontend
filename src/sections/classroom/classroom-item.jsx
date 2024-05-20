@@ -25,7 +25,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 export default function ClassroomItem({ classroom }) {
   const popover = usePopover();
 
-  const { id, professor, title, description, isActive } = classroom;
+  const { classroomId, professor, title, description, isActive } = classroom;
 
   const router = useRouter();
 
@@ -44,7 +44,11 @@ export default function ClassroomItem({ classroom }) {
           <ListItemText
             sx={{ mb: 1 }}
             primary={
-              <Link component={RouterLink} href={paths.classroom.general(id)} color="inherit">
+              <Link
+                component={RouterLink}
+                href={paths.classroom.general(classroomId)}
+                color="inherit"
+              >
                 {title}
               </Link>
             }
@@ -111,7 +115,7 @@ export default function ClassroomItem({ classroom }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
-            router.push(paths.classroom.edit(id));
+            router.push(paths.classroom.edit(classroomId));
           }}
         >
           <Iconify icon="solar:pen-bold" />

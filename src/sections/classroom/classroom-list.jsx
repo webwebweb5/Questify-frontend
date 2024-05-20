@@ -3,11 +3,17 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Pagination, { paginationClasses } from '@mui/material/Pagination';
 
+import EmptyContent from 'src/components/empty-content';
+
 import ClassroomItem from './classroom-item';
 
 // ----------------------------------------------------------------------
 
 export default function ClassroomList({ classrooms }) {
+  if (classrooms.length === 0) {
+    return <EmptyContent filled title="No Data" sx={{ my: 3, py: 10 }} />;
+  }
+
   return (
     <>
       <Box
@@ -22,7 +28,7 @@ export default function ClassroomList({ classrooms }) {
         sx={{ mt: 5 }}
       >
         {classrooms.map((classroom) => (
-          <ClassroomItem key={classroom.id} classroom={classroom} />
+          <ClassroomItem key={classroom.classroomId} classroom={classroom} />
         ))}
       </Box>
 

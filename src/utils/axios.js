@@ -25,6 +25,13 @@ export const fetcher = async (args) => {
 
 // ----------------------------------------------------------------------
 
+export const createClassroom = async (data) => {
+  const res = await axiosInstance.post(endpoints.classroom.list, data);
+  return res.data;
+};
+
+// ----------------------------------------------------------------------
+
 export const endpoints = {
   auth: {
     me: '/api/auth/me',
@@ -33,5 +40,6 @@ export const endpoints = {
   },
   classroom: {
     list: '/api/v1/classroom/',
+    create: '/api/v1/classroom/',
   },
 };
