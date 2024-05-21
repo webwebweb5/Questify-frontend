@@ -11,7 +11,7 @@ export default function AssignmentNewEditDate() {
   return (
     <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
       <Controller
-        name="startDate"
+        name="startTime"
         control={control}
         render={({ field, fieldState: { error } }) => (
           <DatePicker
@@ -32,7 +32,7 @@ export default function AssignmentNewEditDate() {
       />
 
       <Controller
-        name="dueDate"
+        name="endTime"
         control={control}
         render={({ field, fieldState: { error } }) => (
           <DatePicker

@@ -6,6 +6,8 @@ import { Container } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 
+import { useGetAssignmentById } from 'src/api/assignment';
+
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
@@ -17,6 +19,8 @@ export default function AssignmentEditView() {
   const settings = useSettingsContext();
 
   const params = useParams();
+
+  const { assignment } = useGetAssignmentById(params.aid);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -34,7 +38,7 @@ export default function AssignmentEditView() {
         }}
       />
 
-      <AssignmentNewEditForm />
+      <AssignmentNewEditForm currentAssignment={assignment} />
     </Container>
   );
 }

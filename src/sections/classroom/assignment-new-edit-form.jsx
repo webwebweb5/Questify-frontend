@@ -13,9 +13,11 @@ import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
-import { useRouter } from 'src/routes/hooks';
+import { useParams, useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
+
+import { createAssignment, updateAssignment } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -32,35 +34,37 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const params = useParams();
+
   const NewClassroomSchema = Yup.object().shape({
-    topic: Yup.string().required('Topic is required'),
+    title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
-    startDate: Yup.mixed()
+    startTime: Yup.mixed()
       .required('Start date is required')
       .test('date-min', 'Start date must be later or equal to current date', (value) => {
         const today = new Date();
-        const startDate = new Date(value);
+        const startTime = new Date(value);
         // Clear the time part to compare only the date parts
         today.setHours(0, 0, 0, 0);
-        startDate.setHours(0, 0, 0, 0);
-        return startDate >= today;
+        startTime.setHours(0, 0, 0, 0);
+        return startTime >= today;
       }),
-    dueDate: Yup.mixed()
+    endTime: Yup.mixed()
       .required('Due date is required')
       .test(
         'date-min',
         'Due date must be later than create date',
-        (value, { parent }) => value.getTime() > parent.startDate.getTime()
+        (value, { parent }) => value.getTime() > parent.startTime.getTime()
       ),
   });
 
   const defaultValues = useMemo(
     () => ({
-      topic: currentAssignment?.topic || '',
+      title: currentAssignment?.title || '',
       description: currentAssignment?.description || '',
-      isRestrict: currentAssignment?.isRestrict || false,
-      createDate: currentAssignment?.createDate || new Date(),
-      dueDate: currentAssignment?.dueDate || null,
+      // isRestrict: currentAssignment?.isRestrict || false,
+      startTime: currentAssignment?.startTime || new Date(),
+      endTime: currentAssignment?.endTime || null,
     }),
     [currentAssignment]
   );
@@ -78,19 +82,28 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 
   useEffect(() => {
     if (currentAssignment) {
-      reset({ topic: currentAssignment.topic, description: currentAssignment.description });
+      reset({ title: currentAssignment.title, description: currentAssignment.description });
     }
   }, [currentAssignment, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (currentAssignment) {
+        await updateAssignment(currentAssignment.assignmentId, data);
+        enqueueSnackbar('Update success!');
+      } else {
+        await createAssignment(params.cid, data);
+        enqueueSnackbar('Create success!');
+      }
       reset();
-      enqueueSnackbar(currentAssignment ? 'Update success!' : 'Create success!');
       router.back();
-      console.info('DATA', data);
     } catch (error) {
       console.error(error);
+      if (currentAssignment) {
+        enqueueSnackbar('Update failed!', { variant: 'error' });
+      } else {
+        enqueueSnackbar('Create failed!', { variant: 'error' });
+      }
     }
   });
 
@@ -102,7 +115,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
             Details
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Topic and description...
+            Title and description...
           </Typography>
         </Grid>
       )}
@@ -113,8 +126,8 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField
-              name="topic"
-              label="Assignment Topic"
+              name="title"
+              label="Assignment Title"
               placeholder="e.g. Conditional Programming"
             />
 
@@ -169,5 +182,12 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 }
 
 AssignmentNewEditForm.propTypes = {
-  currentAssignment: PropTypes.object,
+  currentAssignment: PropTypes.shape({
+    assignmentId: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    isRestrict: PropTypes.bool,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string,
+  }),
 };

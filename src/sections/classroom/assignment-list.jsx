@@ -17,7 +17,7 @@ export default function AssignmentList({ assignments }) {
     <>
       <Stack spacing={3} sx={{ mt: 5 }}>
         {assignments.map((assignment) => (
-          <AssignmentItem key={assignment.id} assignment={assignment} />
+          <AssignmentItem key={assignment.assignmentId} assignment={assignment} />
         ))}
       </Stack>
 

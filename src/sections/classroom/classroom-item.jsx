@@ -138,8 +138,8 @@ export default function ClassroomItem({ classroom }) {
             alignItems="center"
             sx={{ color: 'primary.main', typography: 'caption' }}
           >
-            <Iconify width={16} icon="solar:users-group-rounded-bold" />
-            12 Members
+            <Iconify width={16} icon="solar:user-rounded-bold" />
+            Professor Id: {professor.professorId}
           </Stack>
         </Stack>
 
@@ -152,8 +152,10 @@ export default function ClassroomItem({ classroom }) {
               icon: <Iconify width={16} icon="carbon:skill-level-basic" sx={{ flexShrink: 0 }} />,
             },
             {
-              label: `Professor Id: ${professor.professorId}`,
-              icon: <Iconify width={16} icon="solar:user-rounded-bold" sx={{ flexShrink: 0 }} />,
+              label: '12 Members',
+              icon: (
+                <Iconify width={16} icon="solar:users-group-rounded-bold" sx={{ flexShrink: 0 }} />
+              ),
             },
           ].map((item) => (
             <Stack
@@ -162,7 +164,7 @@ export default function ClassroomItem({ classroom }) {
               flexShrink={0}
               direction="row"
               alignItems="center"
-              sx={{ color: 'text.disabled', minWidth: 0 }}
+              sx={{ color: 'primary.main', minWidth: 0 }}
             >
               {item.icon}
               <Typography variant="caption" noWrap>
