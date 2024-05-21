@@ -1,17 +1,23 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useRouter } from 'next/navigation';
 
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Card,
   Link,
   Stack,
   Button,
+  Dialog,
   Divider,
   MenuItem,
   IconButton,
   Typography,
+  DialogTitle,
   ListItemText,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
@@ -20,18 +26,51 @@ import { RouterLink } from 'src/routes/components';
 import { fDate } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
+import Markdown from 'src/components/markdown';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function LabItem({ lab, setPopupOpen }) {
-  const { id, topic, time } = lab;
+export default function LabItem({ lab }) {
+  const { laboratoryId, labTitle, description, problemStatement, endTime } = lab;
 
   const popover = usePopover();
 
   const router = useRouter();
 
   const params = useParams();
+
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const renderDialog = (
+    <Dialog fullWidth maxWidth="sm" open={popupOpen} onClose={() => setPopupOpen(false)}>
+      <DialogTitle id="crop-dialog-title">Lab Information</DialogTitle>
+      <DialogContent dividers style={{ position: 'relative' }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          {labTitle}
+        </Typography>
+        <Markdown children={problemStatement} />
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => setPopupOpen(false)}
+          startIcon={<Iconify icon="eva:close-outline" />}
+        >
+          Close
+        </Button>
+        <LoadingButton
+          color="primary"
+          variant="contained"
+          // onClick=""
+          startIcon={<Iconify icon="carbon:play-filled-alt" />}
+          // loading={loading.value}
+        >
+          Start Lab
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <>
@@ -45,10 +84,10 @@ export default function LabItem({ lab, setPopupOpen }) {
             sx={{ mb: 1 }}
             primary={
               <Link component={RouterLink} href="" color="inherit">
-                {topic}
+                {labTitle}
               </Link>
             }
-            secondary={`Due to ${fDate(time)}`}
+            secondary={description}
             primaryTypographyProps={{
               typography: 'subtitle1',
             }}
@@ -60,16 +99,9 @@ export default function LabItem({ lab, setPopupOpen }) {
             }}
           />
 
-          <Stack
-            spacing={0.5}
-            direction="row"
-            alignItems="center"
-            sx={{ color: 'primary.main', typography: 'caption' }}
-          >
-            <Iconify width={16} icon="carbon:location-star-filled" />
-            <Typography variant="caption" noWrap>
-              Match all the test cases Lorem ipsum dolor sit amet.
-            </Typography>
+          <Stack spacing={1} direction="row" sx={{ color: 'primary.main', typography: 'caption' }}>
+            <Iconify width={16} icon="carbon:time-filled" />
+            <Typography variant="caption">{`Due to ${fDate(endTime)}`}</Typography>
           </Stack>
         </Stack>
 
@@ -111,7 +143,7 @@ export default function LabItem({ lab, setPopupOpen }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
-            router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, id));
+            router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, laboratoryId));
           }}
         >
           <Iconify icon="solar:pen-bold" />
@@ -130,11 +162,12 @@ export default function LabItem({ lab, setPopupOpen }) {
           Delete
         </MenuItem>
       </CustomPopover>
+
+      {renderDialog}
     </>
   );
 }
 
 LabItem.propTypes = {
   lab: PropTypes.object,
-  setPopupOpen: PropTypes.func,
 };

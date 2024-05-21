@@ -9,7 +9,7 @@ import { paths } from 'src/routes/paths';
 
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import LabNewEditForm from '../lab-edit-form';
+import LabNewEditForm from '../lab-new-edit-form';
 
 // ----------------------------------------------------------------------
 

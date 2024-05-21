@@ -8,7 +8,7 @@ import { paths } from 'src/routes/paths';
 
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import LabNewEditForm from '../lab-edit-form';
+import LabNewEditForm from '../lab-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -21,10 +21,10 @@ export default function LabCreateView() {
         heading="Create Lab"
         links={[
           {
-            name: 'Conditional Programming (All lab)',
+            name: 'All Lab',
             href: paths.classroom.assignmentId(params.cid, params.aid),
           },
-          { name: 'Calculate tax' },
+          { name: 'Create Lab' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

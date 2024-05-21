@@ -85,6 +85,18 @@ export const deleteAssignment = async (assignmentId) => {
   return res.data;
 };
 
+// --------------------------Laboratory----------------------------------
+
+export const getLaboratoriesByAssignmentId = async (assignmentId) => {
+  const res = await axiosInstance.get(`${endpoints.lab.list}?assignmentId=${assignmentId}`);
+  return res.data;
+};
+
+export const createLaboratory = async (assignmentId, data) => {
+  const res = await axiosInstance.post(`${endpoints.lab.all}?assignmentId=${assignmentId}`, data);
+  return res.data;
+};
+
 // ----------------------------------------------------------------------
 
 export const endpoints = {
@@ -104,5 +116,9 @@ export const endpoints = {
     edit: '/api/v1/assignment',
     update: '/api/v1/assignment',
     delete: '/api/v1/assignment',
+  },
+  lab: {
+    list: '/api/v1/laboratory/assignment',
+    all: '/api/v1/laboratory',
   },
 };

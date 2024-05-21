@@ -9,7 +9,8 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { fDate } from 'src/utils/format-time';
+import { useGetAssignmentById } from 'src/api/assignment';
+import { useGetLaboratoriesByAssignmentId } from 'src/api/laboratory';
 
 import Iconify from 'src/components/iconify';
 import TextMaxLine from 'src/components/text-max-line';
@@ -19,33 +20,13 @@ import LabList from '../lab-list';
 
 // ----------------------------------------------------------------------
 
-const _labs = [
-  {
-    id: 'e99f09a7-dd88-l1',
-    topic: 'calculate triangle space',
-    description: '-',
-    time: 'Sun May 12 2024 21:12:02 GMT+0700 (Indochina Time)',
-  },
-  {
-    id: 'e99f09a7-dd88-l2',
-    topic: 'calculate tax',
-    description: '-',
-    time: 'Mon May 13 2024 10:00:00 GMT+0700 (Indochina Time)',
-  },
-  {
-    id: 'e99f09a7-dd88-l3',
-    topic: 'calculate BMI',
-    description: 'Arrays and Objects',
-    time: 'Tue May 14 2024 13:30:00 GMT+0700 (Indochina Time)',
-  },
-];
-
-// ----------------------------------------------------------------------
-
 export default function LabListView() {
   const settings = useSettingsContext();
 
   const params = useParams();
+
+  const { laboratories } = useGetLaboratoriesByAssignmentId(params.aid);
+  const { assignment } = useGetAssignmentById(params.aid);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -59,13 +40,13 @@ export default function LabListView() {
         Back to all assignment
       </Button>
       <Stack>
-        <Typography variant="h4"> Conditional Programming </Typography>
+        <Typography variant="h4"> {assignment?.title} </Typography>
         <TextMaxLine variant="body2" sx={{ color: 'text.secondary' }}>
-          Due to {fDate('Fri May 17 2024 08:00:00 GMT+0700 (Indochina Time)')}
+          Due to {assignment?.startTime || 'none'}
         </TextMaxLine>
       </Stack>
 
-      <LabList labs={_labs} />
+      <LabList labs={laboratories} />
     </Container>
   );
 }
