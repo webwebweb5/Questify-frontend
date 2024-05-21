@@ -93,7 +93,17 @@ export const getLaboratoriesByAssignmentId = async (assignmentId) => {
 };
 
 export const createLaboratory = async (assignmentId, data) => {
-  const res = await axiosInstance.post(`${endpoints.lab.all}?assignmentId=${assignmentId}`, data);
+  const res = await axiosInstance.post(`${endpoints.lab.crud}?assignmentId=${assignmentId}`, data);
+  return res.data;
+};
+
+export const updateLaboratory = async (laboratoryId, data) => {
+  const res = await axiosInstance.put(`${endpoints.lab.crud}?laboratoryId=${laboratoryId}`, data);
+  return res.data;
+};
+
+export const getLaboratoryById = async (laboratoryId) => {
+  const res = await axiosInstance.get(`${endpoints.lab.crud}?laboratoryId=${laboratoryId}`);
   return res.data;
 };
 
@@ -119,6 +129,6 @@ export const endpoints = {
   },
   lab: {
     list: '/api/v1/laboratory/assignment',
-    all: '/api/v1/laboratory',
+    crud: '/api/v1/laboratory',
   },
 };

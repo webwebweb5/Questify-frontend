@@ -7,23 +7,18 @@ import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
 
+import { useGetLaboratoryById } from 'src/api/laboratory';
+
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import LabNewEditForm from '../lab-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-const _labs = {
-  id: 'e99f09a7-dd88-l2',
-  topic: 'calculate tax',
-  description: '<p>Do something...</p>',
-  time: 'Mon May 13 2024 10:00:00 GMT+0700 (Indochina Time)',
-};
-
-// ----------------------------------------------------------------------
-
 export default function LabEditView({ lab }) {
   const params = useParams();
+
+  const { laboratory } = useGetLaboratoryById(params.lid);
 
   return (
     <Container maxWidth={false}>
@@ -40,7 +35,7 @@ export default function LabEditView({ lab }) {
           mb: { xs: 3, md: 5 },
         }}
       />
-      <LabNewEditForm currentLab={_labs} />
+      <LabNewEditForm currentLab={laboratory} />
     </Container>
   );
 }

@@ -11,7 +11,7 @@ import { Grid, Card, Stack, Divider, CardHeader, Typography } from '@mui/materia
 
 import { paths } from 'src/routes/paths';
 
-import { createLaboratory } from 'src/utils/axios';
+import { createLaboratory, updateLaboratory } from 'src/utils/axios';
 
 import Markdown from 'src/components/markdown';
 import { RHFTextField } from 'src/components/hook-form';
@@ -66,13 +66,18 @@ export default function LabNewEditForm({ currentLab }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 500));
-      await createLaboratory(params.aid, data);
+      if (currentLab) {
+        await updateLaboratory(params.lid, data);
+        enqueueSnackbar('Update success!');
+      } else {
+        await createLaboratory(params.aid, data);
+        enqueueSnackbar('Create success!');
+      }
       reset();
-      enqueueSnackbar(currentLab ? 'Update success!' : 'Create success!');
       router.push(paths.classroom.assignmentId(params.cid, params.aid));
     } catch (error) {
       console.error(error);
+      enqueueSnackbar(error.message);
     }
   });
 

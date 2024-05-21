@@ -7,13 +7,14 @@ import Drawer from '@mui/material/Drawer';
 import { Avatar, Button, useTheme, IconButton, Typography } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
-import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+import { useParams, usePathname } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { bgBlur } from 'src/theme/css';
+import { useGetClassroomById } from 'src/api/classroom';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -36,6 +37,10 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
   const theme = useTheme();
 
   const [navOpen, setNavOpen] = useState(true);
+
+  const params = useParams();
+
+  const { classroom } = useGetClassroomById(params.cid);
 
   useEffect(() => {
     if (openNav) {
@@ -71,11 +76,11 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
         variant="rounded"
         sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 3 }}
       >
-        C
+        {classroom?.title?.charAt(0)}
       </Avatar>
 
       <Typography variant="h6" sx={{ mt: 1, ml: 3, mr: 1 }}>
-        Introduction to Computer Science
+        {classroom?.title}
       </Typography>
 
       <NavSectionVertical

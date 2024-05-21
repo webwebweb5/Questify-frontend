@@ -47,6 +47,17 @@ export default function LabListView() {
       </Stack>
 
       <LabList labs={laboratories} />
+
+      <Button
+        variant="contained"
+        sx={{ py: 1.5, mr: 2 }}
+        href={paths.classroom.LabNew(params.cid, params.aid)}
+      >
+        Add New Lab (Manual)
+      </Button>
+      <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
+        Add New Lab (AI gen)
+      </Button>
     </Container>
   );
 }
