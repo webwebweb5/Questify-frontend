@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 
 import EmptyContent from 'src/components/empty-content';
 
-import LabItem from './view/lab-item';
+import LabItem from './lab-item';
 
 // ----------------------------------------------------------------------
 

@@ -23,6 +23,8 @@ import {
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { useCurrentRole } from 'src/hooks/use-current-role';
+
 import { fDate } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
@@ -33,6 +35,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 export default function LabItem({ lab }) {
   const { laboratoryId, labTitle, description, problemStatement, endTime } = lab;
+
+  const role = useCurrentRole();
 
   const popover = usePopover();
 
@@ -75,9 +79,11 @@ export default function LabItem({ lab }) {
   return (
     <>
       <Card>
-        <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+        {role === 'ProfAcc' && (
+          <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        )}
 
         <Stack sx={{ p: 3, pb: 2 }}>
           <ListItemText
@@ -134,34 +140,36 @@ export default function LabItem({ lab }) {
         </Box>
       </Card>
 
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 160 }}
-      >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, laboratoryId));
-          }}
+      {role === 'ProfAcc' && (
+        <CustomPopover
+          open={popover.open}
+          onClose={popover.onClose}
+          arrow="right-top"
+          sx={{ width: 160 }}
         >
-          <Iconify icon="solar:pen-bold" />
-          Edit
-        </MenuItem>
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+              router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, laboratoryId));
+            }}
+          >
+            <Iconify icon="solar:pen-bold" />
+            Edit
+          </MenuItem>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+          <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
-      </CustomPopover>
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+            }}
+            sx={{ color: 'error.main' }}
+          >
+            <Iconify icon="solar:trash-bin-trash-bold" />
+            Delete
+          </MenuItem>
+        </CustomPopover>
+      )}
 
       {renderDialog}
     </>

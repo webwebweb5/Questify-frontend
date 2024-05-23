@@ -9,9 +9,8 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
-import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { useAuthContext } from 'src/auth/hooks';
 
@@ -29,10 +28,6 @@ const OPTIONS = [
     label: 'Profile',
     linkTo: '/',
   },
-  {
-    label: 'Settings',
-    linkTo: '/',
-  },
 ];
 
 // ----------------------------------------------------------------------
@@ -40,9 +35,7 @@ const OPTIONS = [
 export default function AccountPopover() {
   const router = useRouter();
 
-  const { user } = useMockedUser();
-
-  const { logout } = useAuthContext();
+  const { logout, user } = useAuthContext();
 
   const popover = usePopover();
 
@@ -50,7 +43,7 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
-      router.replace('/');
+      router.replace(paths.auth.login);
     } catch (error) {
       console.error(error);
     }
@@ -80,8 +73,6 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
-          alt={user?.displayName}
           sx={{
             width: 36,
             height: 36,

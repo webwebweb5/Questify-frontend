@@ -89,14 +89,19 @@ export function AuthProvider({ children }) {
   }, []);
 
   // eslint-disable-next-line no-nested-ternary
-  const status = state.loading ? 'loading' : state.user ? 'authenticated' : 'unauthenticated';
+  const checkAuthenticated = state.user ? 'authenticated' : 'unauthenticated';
+
+  const status = state.loading ? 'loading' : checkAuthenticated;
 
   const value = useMemo(
     () => ({
       user: state.user,
+      loading: status === 'loading',
+      authenticated: status === 'authenticated',
+      unauthenticated: status === 'unauthenticated',
+      //
       login,
       logout,
-      status,
     }),
     [login, logout, state.user, status]
   );

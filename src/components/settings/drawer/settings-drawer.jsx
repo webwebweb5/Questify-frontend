@@ -14,8 +14,6 @@ import { paper } from 'src/theme/css';
 import Iconify from '../../iconify';
 import Scrollbar from '../../scrollbar';
 import BaseOptions from './base-option';
-import LayoutOptions from './layout-options';
-import PresetsOptions from './presets-options';
 import { useSettingsContext } from '../context';
 
 // ----------------------------------------------------------------------
@@ -71,33 +69,6 @@ export default function SettingsDrawer() {
     </div>
   );
 
-  const renderLayout = (
-    <div>
-      <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-        Layout
-      </Typography>
-
-      <LayoutOptions
-        value={settings.themeLayout}
-        onChange={(newValue) => settings.onUpdate('themeLayout', newValue)}
-        options={['vertical', 'horizontal', 'mini']}
-      />
-    </div>
-  );
-
-  const renderPresets = (
-    <div>
-      <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-        Presets
-      </Typography>
-
-      <PresetsOptions
-        value={settings.themeColorPresets}
-        onChange={(newValue) => settings.onUpdate('themeColorPresets', newValue)}
-      />
-    </div>
-  );
-
   return (
     <Drawer
       anchor="right"
@@ -120,10 +91,6 @@ export default function SettingsDrawer() {
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3 }}>
           {renderMode}
-
-          {renderLayout}
-
-          {renderPresets}
         </Stack>
       </Scrollbar>
     </Drawer>

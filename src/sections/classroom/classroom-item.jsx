@@ -28,6 +28,7 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import { endpoints, deleteClassroom } from 'src/utils/axios';
 
@@ -38,6 +39,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 export default function ClassroomItem({ classroom }) {
   const popover = usePopover();
+
+  const role = useCurrentRole();
 
   const { classroomId, professor, title, description, isActive } = classroom;
 
@@ -99,9 +102,11 @@ export default function ClassroomItem({ classroom }) {
   return (
     <>
       <Card>
-        <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+        {role === 'ProfAcc' && (
+          <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        )}
 
         <Stack sx={{ p: 3, pb: 2 }}>
           <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
@@ -175,32 +180,34 @@ export default function ClassroomItem({ classroom }) {
         </Box>
       </Card>
 
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 140 }}
-      >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-            router.push(paths.classroom.edit(classroomId));
-          }}
+      {role === 'ProfAcc' && (
+        <CustomPopover
+          open={popover.open}
+          onClose={popover.onClose}
+          arrow="right-top"
+          sx={{ width: 140 }}
         >
-          <Iconify icon="solar:pen-bold" />
-          Edit
-        </MenuItem>
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+              router.push(paths.classroom.edit(classroomId));
+            }}
+          >
+            <Iconify icon="solar:pen-bold" />
+            Edit
+          </MenuItem>
 
-        <MenuItem
-          onClick={() => {
-            setPopupOpen(true);
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
-      </CustomPopover>
+          <MenuItem
+            onClick={() => {
+              setPopupOpen(true);
+            }}
+            sx={{ color: 'error.main' }}
+          >
+            <Iconify icon="solar:trash-bin-trash-bold" />
+            Delete
+          </MenuItem>
+        </CustomPopover>
+      )}
 
       {renderDelete}
     </>

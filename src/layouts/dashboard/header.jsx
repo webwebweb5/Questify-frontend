@@ -10,6 +10,7 @@ import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
+import { useAuthContext } from 'src/auth/hooks';
 
 import Logo from 'src/components/logo';
 import SvgColor from 'src/components/svg-color';
@@ -26,6 +27,8 @@ export default function Header({ onOpenNav }) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
+
+  const { user } = useAuthContext();
 
   const isNavHorizontal = settings.themeLayout === 'horizontal';
 
@@ -58,7 +61,7 @@ export default function Header({ onOpenNav }) {
 
         <SettingsButton />
 
-        <AccountPopover />
+        {user && <AccountPopover />}
       </Stack>
     </>
   );

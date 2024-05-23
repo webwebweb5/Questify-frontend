@@ -1,11 +1,11 @@
-import { JwtLoginView } from 'src/sections/auth/jwt';
+import { LoginView } from 'src/sections/auth/jwt';
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Jwt: Login',
+  title: 'Questify | Login',
 };
 
 export default function LoginPage() {
-  return <JwtLoginView />;
+  return <LoginView />;
 }

@@ -26,6 +26,7 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import { deleteAssignment } from 'src/utils/axios';
 import { fDate, fDateTime } from 'src/utils/format-time';
@@ -36,6 +37,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 export default function AssignmentItem({ assignment }) {
   const theme = useTheme();
+
+  const role = useCurrentRole();
 
   const popover = usePopover();
 
@@ -101,9 +104,11 @@ export default function AssignmentItem({ assignment }) {
   return (
     <>
       <Stack component={Card} direction="row">
-        <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+        {role === 'ProfAcc' && (
+          <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        )}
         <Stack
           spacing={2}
           sx={{
@@ -158,32 +163,34 @@ export default function AssignmentItem({ assignment }) {
           </Stack>
         </Stack>
 
-        <CustomPopover
-          open={popover.open}
-          onClose={popover.onClose}
-          arrow="right-top"
-          sx={{ width: 140 }}
-        >
-          <MenuItem
-            onClick={() => {
-              popover.onClose();
-              router.push(paths.classroom.assignmentEdit(params.cid, assignmentId));
-            }}
+        {role === 'ProfAcc' && (
+          <CustomPopover
+            open={popover.open}
+            onClose={popover.onClose}
+            arrow="right-top"
+            sx={{ width: 140 }}
           >
-            <Iconify icon="solar:pen-bold" />
-            Edit
-          </MenuItem>
+            <MenuItem
+              onClick={() => {
+                popover.onClose();
+                router.push(paths.classroom.assignmentEdit(params.cid, assignmentId));
+              }}
+            >
+              <Iconify icon="solar:pen-bold" />
+              Edit
+            </MenuItem>
 
-          <MenuItem
-            onClick={() => {
-              setPopupOpen(true);
-            }}
-            sx={{ color: 'error.main' }}
-          >
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
-          </MenuItem>
-        </CustomPopover>
+            <MenuItem
+              onClick={() => {
+                setPopupOpen(true);
+              }}
+              sx={{ color: 'error.main' }}
+            >
+              <Iconify icon="solar:trash-bin-trash-bold" />
+              Delete
+            </MenuItem>
+          </CustomPopover>
+        )}
       </Stack>
 
       {renderDelete}

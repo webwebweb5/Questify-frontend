@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { useCurrentRole } from 'src/hooks/use-current-role';
+
 import { useGetAssignmentById } from 'src/api/assignment';
 import { useGetLaboratoriesByAssignmentId } from 'src/api/laboratory';
 
@@ -24,6 +26,8 @@ export default function LabListView() {
   const settings = useSettingsContext();
 
   const params = useParams();
+
+  const role = useCurrentRole();
 
   const { laboratories } = useGetLaboratoriesByAssignmentId(params.aid);
   const { assignment } = useGetAssignmentById(params.aid);
@@ -48,16 +52,20 @@ export default function LabListView() {
 
       <LabList labs={laboratories} />
 
-      <Button
-        variant="contained"
-        sx={{ py: 1.5, mr: 2 }}
-        href={paths.classroom.LabNew(params.cid, params.aid)}
-      >
-        Add New Lab (Manual)
-      </Button>
-      <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
-        Add New Lab (AI gen)
-      </Button>
+      {role === 'ProfAcc' && (
+        <>
+          <Button
+            variant="contained"
+            sx={{ py: 1.5, mr: 2 }}
+            href={paths.classroom.LabNew(params.cid, params.aid)}
+          >
+            Add New Lab (Manual)
+          </Button>
+          <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
+            Add New Lab (AI gen)
+          </Button>
+        </>
+      )}
     </Container>
   );
 }

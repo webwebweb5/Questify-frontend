@@ -1,18 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback } from 'react';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
 import { useAuthContext } from '../hooks';
-
-// ----------------------------------------------------------------------
-
-const loginPaths = {
-  jwt: paths.auth.jwt.login,
-};
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +24,7 @@ AuthGuard.propTypes = {
 function Container({ children }) {
   const router = useRouter();
 
-  const { authenticated, method } = useAuthContext();
+  const { authenticated } = useAuthContext();
 
   const [checked, setChecked] = useState(false);
 
@@ -41,15 +34,13 @@ function Container({ children }) {
         returnTo: window.location.pathname,
       }).toString();
 
-      const loginPath = loginPaths[method];
-
-      const href = `${loginPath}?${searchParams}`;
+      const href = `/auth/login?${searchParams}`;
 
       router.replace(href);
     } else {
       setChecked(true);
     }
-  }, [authenticated, method, router]);
+  }, [authenticated, router]);
 
   useEffect(() => {
     check();

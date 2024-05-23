@@ -7,6 +7,8 @@ import { Stack, Button, Container, Typography } from '@mui/material';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { useCurrentRole } from 'src/hooks/use-current-role';
+
 import { useGetAssignments } from 'src/api/assignment';
 
 import Iconify from 'src/components/iconify';
@@ -23,19 +25,24 @@ export default function AssignmentListView() {
 
   const { assignments } = useGetAssignments(params.cid);
 
+  const role = useCurrentRole();
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4"> Assignment </Typography>
-        <Button
-          component={RouterLink}
-          href={paths.classroom.assignmentNew(params.cid)}
-          variant="contained"
-          color="primary"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          New Assignment
-        </Button>
+
+        {role === 'ProfAcc' && (
+          <Button
+            component={RouterLink}
+            href={paths.classroom.assignmentNew(params.cid)}
+            variant="contained"
+            color="primary"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            New Assignment
+          </Button>
+        )}
       </Stack>
 
       <AssignmentList assignments={assignments} />
