@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { _notifications } from 'src/_mock';
+// import { _notifications } from 'src/_mock';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -30,12 +30,12 @@ const TABS = [
   {
     value: 'all',
     label: 'All',
-    count: _notifications.length,
+    count: 0,
   },
   {
     value: 'unread',
     label: 'Unread',
-    count: _notifications.filter((item) => item.isUnRead === true).length,
+    count: 0,
   },
 ];
 
@@ -52,7 +52,7 @@ export default function NotificationsPopover() {
     setCurrentTab(newValue);
   }, []);
 
-  const [notifications, setNotifications] = useState(_notifications);
+  const [notifications, setNotifications] = useState([]);
 
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
 
