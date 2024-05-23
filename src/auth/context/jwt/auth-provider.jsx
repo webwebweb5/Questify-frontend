@@ -1,20 +1,10 @@
 'use client';
 
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
-import axios, { endpoints } from 'src/utils/axios';
-
 import { AuthContext } from './auth-context';
-import { setSession, isValidToken } from './utils';
-
-// ----------------------------------------------------------------------
-/**
- * NOTE:
- * We only build demo at basic level.
- * Customer will need to do some extra handling yourself if you want to extend the logic and other features...
- */
-// ----------------------------------------------------------------------
 
 const initialState = {
   user: null,
@@ -22,31 +12,25 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  if (action.type === 'INITIAL') {
-    return {
-      loading: false,
-      user: action.payload.user,
-    };
+  switch (action.type) {
+    case 'INITIAL':
+      return {
+        loading: false,
+        user: action.payload.user,
+      };
+    case 'LOGIN':
+      return {
+        ...state,
+        user: action.payload.user,
+      };
+    case 'LOGOUT':
+      return {
+        ...state,
+        user: null,
+      };
+    default:
+      return state;
   }
-  if (action.type === 'LOGIN') {
-    return {
-      ...state,
-      user: action.payload.user,
-    };
-  }
-  if (action.type === 'REGISTER') {
-    return {
-      ...state,
-      user: action.payload.user,
-    };
-  }
-  if (action.type === 'LOGOUT') {
-    return {
-      ...state,
-      user: null,
-    };
-  }
-  return state;
 };
 
 // ----------------------------------------------------------------------
@@ -60,38 +44,24 @@ export function AuthProvider({ children }) {
     try {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
-      if (accessToken && isValidToken(accessToken)) {
-        setSession(accessToken);
+      if (accessToken) {
+        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-        const response = await axios.get(endpoints.auth.me);
-
-        const { user } = response.data;
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/auth/profile`
+        );
+        const user = response.data.data;
 
         dispatch({
           type: 'INITIAL',
-          payload: {
-            user: {
-              ...user,
-              accessToken,
-            },
-          },
+          payload: { user },
         });
       } else {
-        dispatch({
-          type: 'INITIAL',
-          payload: {
-            user: null,
-          },
-        });
+        dispatch({ type: 'INITIAL', payload: { user: null } });
       }
     } catch (error) {
       console.error(error);
-      dispatch({
-        type: 'INITIAL',
-        payload: {
-          user: null,
-        },
-      });
+      dispatch({ type: 'INITIAL', payload: { user: null } });
     }
   }, []);
 
@@ -100,85 +70,38 @@ export function AuthProvider({ children }) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback(async (email, password) => {
-    const data = {
-      email,
-      password,
-    };
-
-    const response = await axios.post(endpoints.auth.login, data);
-
-    const { accessToken, user } = response.data;
-
-    setSession(accessToken);
-
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user: {
-          ...user,
-          accessToken,
-        },
-      },
-    });
-  }, []);
-
-  // REGISTER
-  const register = useCallback(async (email, password, firstName, lastName) => {
-    const data = {
-      email,
-      password,
-      firstName,
-      lastName,
-    };
-
-    const response = await axios.post(endpoints.auth.register, data);
-
+  const login = useCallback(async (code) => {
+    const response = await axios.post('http://localhost:3000/api/auth/login', { code });
     const { accessToken, user } = response.data;
 
     sessionStorage.setItem(STORAGE_KEY, accessToken);
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        user: {
-          ...user,
-          accessToken,
-        },
-      },
-    });
+    dispatch({ type: 'LOGIN', payload: { user } });
   }, []);
 
   // LOGOUT
-  const logout = useCallback(async () => {
-    setSession(null);
-    dispatch({
-      type: 'LOGOUT',
-    });
+  const logout = useCallback(() => {
+    sessionStorage.removeItem(STORAGE_KEY);
+    delete axios.defaults.headers.common.Authorization;
+
+    dispatch({ type: 'LOGOUT' });
   }, []);
 
-  // ----------------------------------------------------------------------
+  // eslint-disable-next-line no-nested-ternary
+  const status = state.loading ? 'loading' : state.user ? 'authenticated' : 'unauthenticated';
 
-  const checkAuthenticated = state.user ? 'authenticated' : 'unauthenticated';
-
-  const status = state.loading ? 'loading' : checkAuthenticated;
-
-  const memoizedValue = useMemo(
+  const value = useMemo(
     () => ({
       user: state.user,
-      method: 'jwt',
-      loading: status === 'loading',
-      authenticated: status === 'authenticated',
-      unauthenticated: status === 'unauthenticated',
-      //
       login,
-      register,
       logout,
+      status,
     }),
-    [login, logout, register, state.user, status]
+    [login, logout, state.user, status]
   );
 
-  return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 AuthProvider.propTypes = {

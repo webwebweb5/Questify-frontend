@@ -6,6 +6,17 @@ import { BACKEND_API } from 'src/config-global';
 
 const axiosInstance = axios.create({ baseURL: BACKEND_API });
 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = sessionStorage.getItem('accessToken'); // Adjust this to where your token is stored
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 axiosInstance.interceptors.response.use(
   (res) => res,
   (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')

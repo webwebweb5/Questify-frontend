@@ -33,9 +33,12 @@ export default function AuthClassicLayout({ children, image, title }) {
         width: 1,
         mx: 'auto',
         maxWidth: 480,
-        px: { xs: 2, md: 8 },
-        pt: { xs: 15, md: 20 },
-        pb: { xs: 15, md: 0 },
+        // px: { xs: 2, md: 8 },
+        // pt: { xs: 15, md: 20 },
+        // pb: { xs: 15, md: 0 },
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       {children}
