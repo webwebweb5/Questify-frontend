@@ -1,5 +1,6 @@
 import { mutate } from 'swr';
 import { useState } from 'react';
+import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
@@ -25,7 +26,6 @@ import {
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useCurrentRole } from 'src/hooks/use-current-role';
@@ -33,6 +33,7 @@ import { useCurrentRole } from 'src/hooks/use-current-role';
 import { endpoints, deleteClassroom } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
+import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
@@ -102,10 +103,15 @@ export default function ClassroomItem({ classroom }) {
   return (
     <>
       <Link
-        component={RouterLink}
-        href={paths.classroom.general(classroomId)}
-        color="inherit"
+        component={m.div}
+        onClick={() => {
+          router.push(paths.classroom.general(classroomId));
+        }}
+        whileTap="tap"
+        whileHover="hover"
+        variants={varHover(1.02, 0.99)}
         underline="none"
+        sx={{ cursor: 'pointer' }}
       >
         <Card
           sx={{
