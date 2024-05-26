@@ -127,15 +127,7 @@ export default function ClassroomItem({ classroom }) {
 
             <ListItemText
               sx={{ mb: 1 }}
-              primary={
-                <Link
-                  component={RouterLink}
-                  href={paths.classroom.general(classroomId)}
-                  color="inherit"
-                >
-                  {title}
-                </Link>
-              }
+              primary={title}
               secondary={description}
               primaryTypographyProps={{
                 typography: 'subtitle1',
