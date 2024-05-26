@@ -27,7 +27,7 @@ export default function ClassroomList({ classrooms }) {
   const currentClassrooms = classrooms.slice(startIndex, startIndex + maxPerPage);
 
   if (classrooms.length === 0) {
-    return <EmptyContent filled title="No Classroom" sx={{ my: 3, py: 10 }} />;
+    return <EmptyContent filled title="No Classroom" />;
   }
 
   return (
