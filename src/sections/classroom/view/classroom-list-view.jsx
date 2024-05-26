@@ -30,7 +30,7 @@ export default function ClassroomListView() {
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4"> Classroom </Typography>
 
-        {role === 'ProfAcc' && (
+        {role === 'ProfAcc' ? (
           <Button
             component={RouterLink}
             href={paths.classroom.new}
@@ -39,6 +39,16 @@ export default function ClassroomListView() {
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
             New Classroom
+          </Button>
+        ) : (
+          <Button
+            component={RouterLink}
+            href=""
+            variant="contained"
+            color="primary"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            Join Classroom
           </Button>
         )}
       </Stack>

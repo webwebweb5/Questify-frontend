@@ -42,7 +42,7 @@ export default function ClassroomItem({ classroom }) {
 
   const role = useCurrentRole();
 
-  const { classroomId, professor, title, description, isActive } = classroom;
+  const { classroomId, professor, title, description, studentQuantity } = classroom;
 
   const router = useRouter();
 
@@ -101,84 +101,90 @@ export default function ClassroomItem({ classroom }) {
 
   return (
     <>
-      <Card>
-        {role === 'ProfAcc' && (
-          <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        )}
+      <Link
+        component={RouterLink}
+        href={paths.classroom.general(classroomId)}
+        color="inherit"
+        underline="none"
+      >
+        <Card
+          sx={{
+            '&:hover': {
+              backgroundColor: (theme) => theme.palette.action.hover,
+            },
+          }}
+        >
+          {role === 'ProfAcc' && (
+            <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          )}
 
-        <Stack sx={{ p: 3, pb: 2 }}>
-          <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
-            {title?.charAt(0).toUpperCase()}
-          </Avatar>
+          <Stack sx={{ p: 3, pb: 2 }}>
+            <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
+              {title?.charAt(0).toUpperCase()}
+            </Avatar>
 
-          <ListItemText
-            sx={{ mb: 1 }}
-            primary={
-              <Link
-                component={RouterLink}
-                href={paths.classroom.general(classroomId)}
-                color="inherit"
-              >
-                {title}
-              </Link>
-            }
-            secondary={description}
-            // secondary={`Joined date: ${fDate(createdAt)}`}
-            primaryTypographyProps={{
-              typography: 'subtitle1',
-            }}
-            secondaryTypographyProps={{
-              mt: 1,
-              component: 'span',
-              typography: 'caption',
-              color: 'text.disabled',
-            }}
-          />
-
-          <Stack
-            spacing={0.5}
-            direction="row"
-            alignItems="center"
-            sx={{ color: 'primary.main', typography: 'caption' }}
-          >
-            <Iconify width={16} icon="solar:user-rounded-bold" />
-            Professor Id: {professor.professorId}
+            <ListItemText
+              sx={{ mb: 1 }}
+              primary={
+                <Link
+                  component={RouterLink}
+                  href={paths.classroom.general(classroomId)}
+                  color="inherit"
+                >
+                  {title}
+                </Link>
+              }
+              secondary={description}
+              primaryTypographyProps={{
+                typography: 'subtitle1',
+              }}
+              secondaryTypographyProps={{
+                mt: 1,
+                component: 'span',
+                typography: 'caption',
+                color: 'text.disabled',
+              }}
+            />
           </Stack>
-        </Stack>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+          <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Box rowGap={1.5} display="grid" gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
-          {[
-            {
-              label: `isActive: ${isActive.toString()}`,
-              icon: <Iconify width={16} icon="carbon:skill-level-basic" sx={{ flexShrink: 0 }} />,
-            },
-            {
-              label: '12 Members',
-              icon: (
-                <Iconify width={16} icon="solar:users-group-rounded-bold" sx={{ flexShrink: 0 }} />
-              ),
-            },
-          ].map((item) => (
-            <Stack
-              key={item.label}
-              spacing={0.5}
-              flexShrink={0}
-              direction="row"
-              alignItems="center"
-              sx={{ color: 'primary.main', minWidth: 0 }}
-            >
-              {item.icon}
-              <Typography variant="caption" noWrap>
-                {item.label}
-              </Typography>
-            </Stack>
-          ))}
-        </Box>
-      </Card>
+          <Box rowGap={1.5} display="grid" gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
+            {[
+              {
+                label: `${professor.professorId}`,
+                icon: <Iconify width={16} icon="mdi:teacher" sx={{ flexShrink: 0 }} />,
+              },
+              {
+                label: `${studentQuantity} Member${studentQuantity > 0 ? 's' : ''}`,
+                icon: (
+                  <Iconify
+                    width={16}
+                    icon="solar:users-group-rounded-bold"
+                    sx={{ flexShrink: 0 }}
+                  />
+                ),
+              },
+            ].map((item) => (
+              <Stack
+                key={item.label}
+                spacing={0.5}
+                flexShrink={0}
+                direction="row"
+                alignItems="center"
+                sx={{ color: 'primary.main', minWidth: 0 }}
+              >
+                {item.icon}
+                <Typography variant="caption" noWrap>
+                  {item.label}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+        </Card>
+      </Link>
 
       {role === 'ProfAcc' && (
         <CustomPopover
