@@ -140,6 +140,7 @@ export default function LabItem({ lab }) {
                 color="primary"
                 sx={{ py: 1.5 }}
                 startIcon={<Iconify icon="carbon:play-filled-alt" />}
+                href={paths.lab.question(laboratoryId)}
               >
                 Start Lab
               </Button>

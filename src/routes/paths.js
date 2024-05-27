@@ -27,4 +27,8 @@ export const paths = {
     members: (id) => `/classroom/${id}/members`,
     grade: (id) => `/classroom/${id}/grade`,
   },
+  // LABORATORY
+  lab: {
+    question: (lid) => `/lab/${lid}`,
+  },
 };
