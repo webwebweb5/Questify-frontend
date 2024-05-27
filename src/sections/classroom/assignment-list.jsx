@@ -1,9 +1,11 @@
+import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
 
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Pagination, { paginationClasses } from '@mui/material/Pagination';
 
 import EmptyContent from 'src/components/empty-content';
+import { varFade, MotionContainer } from 'src/components/animate';
 
 import AssignmentItem from './assignment-item';
 
@@ -15,11 +17,15 @@ export default function AssignmentList({ assignments }) {
   }
   return (
     <>
-      <Stack spacing={3} sx={{ mt: 5 }}>
-        {assignments.map((assignment) => (
-          <AssignmentItem key={assignment.assignmentId} assignment={assignment} />
-        ))}
-      </Stack>
+      <MotionContainer>
+        <Stack spacing={3} sx={{ mt: 5 }}>
+          {assignments.map((assignment) => (
+            <Box key={assignment.assignmentId} component={m.div} variants={varFade().inUp}>
+              <AssignmentItem assignment={assignment} />
+            </Box>
+          ))}
+        </Stack>
+      </MotionContainer>
 
       {/* {assignments.length > 8 && ( */}
       <Pagination
