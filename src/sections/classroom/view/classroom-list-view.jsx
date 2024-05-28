@@ -16,6 +16,8 @@ import { RouterLink } from 'src/routes/components';
 
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
+import { joinClassroom } from 'src/utils/axios';
+
 import { useGetClassroom } from 'src/api/classroom';
 
 import Iconify from 'src/components/iconify';
@@ -62,12 +64,16 @@ export default function ClassroomListView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
-      enqueueSnackbar('Join classroom successfully');
+      const response = await joinClassroom(data.invitationCode);
+      enqueueSnackbar(`${response.data.message}`);
       setPopupOpen(false);
       reset();
     } catch (error) {
       console.error(error);
+      // 'There is no such invitation code, Please try again'
+      enqueueSnackbar(`${error.message}`, {
+        variant: 'error',
+      });
     }
   });
 

@@ -61,6 +61,11 @@ export const deleteClassroom = async (classroomId) => {
   }
 };
 
+export const joinClassroom = async (classroomId) => {
+  const res = await axiosInstance.get(`/api/v1/classroom/join?classroomId=${classroomId}`);
+  return res.data;
+};
+
 // --------------------------Assignment----------------------------------
 
 export const getAssignments = async (classroomId) => {
