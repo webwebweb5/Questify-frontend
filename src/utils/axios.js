@@ -120,6 +120,13 @@ export const getLaboratoryById = async (laboratoryId) => {
 
 // ----------------------------------------------------------------------
 
+export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
+  const res = await axiosInstance.get(`${endpoints.submission.get}?laboratoryId=${laboratoryId}`);
+  return res.data;
+};
+
+// ----------------------------------------------------------------------
+
 export const endpoints = {
   auth: {
     me: '/api/auth/me',
@@ -141,5 +148,8 @@ export const endpoints = {
   lab: {
     list: '/api/v1/laboratory/assignment',
     crud: '/api/v1/laboratory',
+  },
+  submission: {
+    get: '/api/v1/submission',
   },
 };
