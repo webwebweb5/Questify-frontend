@@ -19,7 +19,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { createClassroom, updateClassroom } from 'src/utils/axios';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -31,15 +31,18 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewClassroomSchema = Yup.object().shape({
-    title: Yup.string().required('Classroom title is required'),
-    description: Yup.string().required('Description is required'),
+    title: Yup.string()
+      .required('Classroom title is required')
+      .max(80, 'Classroom title must not exceed 80 characters'),
+    description: Yup.string()
+      .required('Description is required')
+      .max(200, 'Description must not exceed 200 characters'),
   });
 
   const defaultValues = useMemo(
     () => ({
       title: '',
       description: '',
-      isActive: false,
     }),
     []
   );
@@ -60,7 +63,6 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
       reset({
         title: currentClassroom.title,
         description: currentClassroom.description,
-        isActive: currentClassroom.isActive,
       });
     }
   }, [currentClassroom, reset]);
@@ -68,16 +70,17 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (currentClassroom) {
-        await updateClassroom(currentClassroom.classroomId, data);
-        enqueueSnackbar('Update success!');
+        const response = await updateClassroom(currentClassroom.classroomId, data);
+        enqueueSnackbar(`${response.message}`);
       } else {
-        await createClassroom(data);
-        enqueueSnackbar('Create success!');
+        const response = await createClassroom(data);
+        enqueueSnackbar(`${response.message}`);
       }
       reset();
       router.push(paths.dashboard.classroom);
     } catch (error) {
       console.error(error);
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
     }
   });
 
@@ -112,8 +115,6 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
               rows={4}
               placeholder="e.g. Fundamental of Software Engineer"
             />
-
-            <RHFSwitch name="isActive" label="Publish" />
           </Stack>
         </Card>
       </Grid>
@@ -147,6 +148,5 @@ ClassroomNewEditForm.propTypes = {
     classroomId: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
-    isActive: PropTypes.bool,
   }),
 };

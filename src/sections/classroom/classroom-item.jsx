@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import {
   Button,
   Dialog,
+  Tooltip,
   DialogTitle,
   DialogActions,
   DialogContent,
@@ -34,6 +35,7 @@ import { endpoints, deleteClassroom } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import { varHover } from 'src/components/animate';
+import TextMaxLine from 'src/components/text-max-line';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
@@ -113,75 +115,91 @@ export default function ClassroomItem({ classroom }) {
         underline="none"
         sx={{ cursor: 'pointer' }}
       >
-        <Card
-          sx={{
-            '&:hover': {
-              backgroundColor: (theme) => theme.palette.action.hover,
-            },
-          }}
-        >
-          {role === 'ProfAcc' && (
-            <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
-              <Iconify icon="eva:more-vertical-fill" />
-            </IconButton>
-          )}
-
-          <Stack sx={{ p: 3, pb: 2 }}>
-            <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
-              {title?.charAt(0).toUpperCase()}
-            </Avatar>
-
-            <ListItemText
-              sx={{ mb: 1 }}
-              primary={title}
-              secondary={description}
-              primaryTypographyProps={{
-                typography: 'subtitle1',
-              }}
-              secondaryTypographyProps={{
-                mt: 1,
-                component: 'span',
-                typography: 'caption',
-                color: 'text.disabled',
-              }}
-            />
-          </Stack>
-
-          <Divider sx={{ borderStyle: 'dashed' }} />
-
-          <Box rowGap={1.5} display="grid" gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
-            {[
-              {
-                label: `${professor.professorId}`,
-                icon: <Iconify width={16} icon="mdi:teacher" sx={{ flexShrink: 0 }} />,
+        <Tooltip title={title} placement="top" arrow>
+          <Card
+            sx={{
+              '&:hover': {
+                backgroundColor: (theme) => theme.palette.action.hover,
               },
-              {
-                label: `${studentQuantity} Member${studentQuantity > 0 ? 's' : ''}`,
-                icon: (
-                  <Iconify
-                    width={16}
-                    icon="solar:users-group-rounded-bold"
-                    sx={{ flexShrink: 0 }}
-                  />
-                ),
-              },
-            ].map((item) => (
-              <Stack
-                key={item.label}
-                spacing={0.5}
-                flexShrink={0}
-                direction="row"
-                alignItems="center"
-                sx={{ color: 'primary.main', minWidth: 0 }}
+            }}
+          >
+            {role === 'ProfAcc' && (
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  popover.onOpen(event);
+                }}
+                sx={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}
               >
-                {item.icon}
-                <Typography variant="caption" noWrap>
-                  {item.label}
-                </Typography>
-              </Stack>
-            ))}
-          </Box>
-        </Card>
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            )}
+
+            <Stack sx={{ p: 3, pb: 2 }}>
+              <Avatar alt={title} src="" variant="rounded" sx={{ width: 48, height: 48, mb: 2 }}>
+                {title?.charAt(0).toUpperCase()}
+              </Avatar>
+
+              <ListItemText
+                sx={{ mb: 1 }}
+                primary={
+                  <TextMaxLine variant="subtitle1" line={1}>
+                    {title}
+                  </TextMaxLine>
+                }
+                secondary={
+                  <TextMaxLine variant="caption" line={2}>
+                    {description}
+                  </TextMaxLine>
+                }
+                primaryTypographyProps={{
+                  typography: 'subtitle1',
+                }}
+                secondaryTypographyProps={{
+                  mt: 1,
+                  component: 'span',
+                  typography: 'caption',
+                  color: 'text.disabled',
+                }}
+              />
+            </Stack>
+
+            <Divider sx={{ borderStyle: 'dashed' }} />
+
+            <Box rowGap={1.5} display="grid" gridTemplateColumns="repeat(2, 1fr)" sx={{ p: 3 }}>
+              {[
+                {
+                  label: `${professor.professorId}`,
+                  icon: <Iconify width={16} icon="mdi:teacher" sx={{ flexShrink: 0 }} />,
+                },
+                {
+                  label: `${studentQuantity} Member${studentQuantity > 0 ? 's' : ''}`,
+                  icon: (
+                    <Iconify
+                      width={16}
+                      icon="solar:users-group-rounded-bold"
+                      sx={{ flexShrink: 0 }}
+                    />
+                  ),
+                },
+              ].map((item) => (
+                <Stack
+                  key={item.label}
+                  spacing={0.5}
+                  flexShrink={0}
+                  direction="row"
+                  alignItems="center"
+                  sx={{ color: 'primary.main', minWidth: 0 }}
+                >
+                  {item.icon}
+                  <Typography variant="caption" noWrap>
+                    {item.label}
+                  </Typography>
+                </Stack>
+              ))}
+            </Box>
+          </Card>
+        </Tooltip>
       </Link>
 
       {role === 'ProfAcc' && (
