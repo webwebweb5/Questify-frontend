@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Stack from '@mui/material/Stack';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ export default function AssignmentNewEditDate() {
         name="startTime"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <DatePicker
+          <DateTimePicker
             label="Start Date"
             value={field.value}
             onChange={(newValue) => {
@@ -35,7 +35,7 @@ export default function AssignmentNewEditDate() {
         name="endTime"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <DatePicker
+          <DateTimePicker
             label="Due date"
             value={field.value}
             onChange={(newValue) => {

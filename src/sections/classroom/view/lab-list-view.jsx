@@ -11,6 +11,8 @@ import { RouterLink } from 'src/routes/components';
 
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
+import { fDateTime } from 'src/utils/format-time';
+
 import { useGetAssignmentById } from 'src/api/assignment';
 import { useGetLaboratoriesByAssignmentId } from 'src/api/laboratory';
 
@@ -46,7 +48,7 @@ export default function LabListView() {
       <Stack>
         <Typography variant="h4"> {assignment?.title} </Typography>
         <TextMaxLine variant="body2" sx={{ color: 'text.secondary' }}>
-          Due to {assignment?.startTime || 'none'}
+          Due to {`${fDateTime(assignment?.startTime)}` || 'none'}
         </TextMaxLine>
       </Stack>
 

@@ -28,8 +28,8 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
+import { fDateTime } from 'src/utils/format-time';
 import { deleteAssignment } from 'src/utils/axios';
-import { fDate, fDateTime } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
 import TextMaxLine from 'src/components/text-max-line';
@@ -156,7 +156,7 @@ export default function AssignmentItem({ assignment }) {
                 </TextMaxLine>
 
                 <TextMaxLine variant="body2" sx={{ color: 'text.secondary' }}>
-                  {endTime ? `Due ${fDate(endTime)}` : 'No Due Date'}
+                  {endTime ? `Due ${fDateTime(endTime)}` : 'No Due Date'}
                 </TextMaxLine>
               </Stack>
             </Stack>

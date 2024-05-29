@@ -15,6 +15,7 @@ export function useLocales() {
   return {
     allLangs,
     currentLang,
+    timeZone: currentLang.timeZone, // Provide the time zone information
   };
 }
 
@@ -26,9 +27,9 @@ export function useTranslate() {
   const settings = useSettingsContext();
 
   const onChangeLang = useCallback(
-    (newlang) => {
-      i18n.changeLanguage(newlang);
-      settings.onChangeDirectionByLang(newlang);
+    (newLang) => {
+      i18n.changeLanguage(newLang);
+      settings.onChangeDirectionByLang(newLang);
     },
     [i18n, settings]
   );

@@ -2,7 +2,8 @@
 
 import merge from 'lodash/merge';
 // date fns
-import { enUS as enUSAdapter } from 'date-fns/locale';
+// eslint-disable-next-line import/no-unresolved
+import th from 'date-fns/locale/th';
 
 // core (MUI)
 import { enUS as enUSCore } from '@mui/material/locale';
@@ -19,17 +20,14 @@ export const allLangs = [
     label: 'English',
     value: 'en',
     systemValue: merge(enUSDate, enUSDataGrid, enUSCore),
-    adapterLocale: enUSAdapter,
+    adapterLocale: th,
     icon: 'flagpack:gb-nir',
     numberFormat: {
       code: 'en-US',
       currency: 'USD',
     },
+    timeZone: 'Asia/Bangkok', // Add time zone information here
   },
 ];
 
 export const defaultLang = allLangs[0]; // English
-
-// GET MORE COUNTRY FLAGS
-// https://icon-sets.iconify.design/flagpack/
-// https://www.dropbox.com/sh/nec1vwswr9lqbh9/AAB9ufC8iccxvtWi3rzZvndLa?dl=0

@@ -37,24 +37,26 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
   const params = useParams();
 
   const NewClassroomSchema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
-    description: Yup.string().required('Description is required'),
+    title: Yup.string()
+      .required('Title is required')
+      .max(50, 'Assignment title must not exceed 50 characters'),
+    description: Yup.string()
+      .required('Description is required')
+      .max(100, 'Assignment description must not exceed 100 characters'),
     startTime: Yup.mixed()
       .required('Start date is required')
       .test('date-min', 'Start date must be later or equal to current date', (value) => {
         const today = new Date();
         const startTime = new Date(value);
-        // Clear the time part to compare only the date parts
         today.setHours(0, 0, 0, 0);
-        startTime.setHours(0, 0, 0, 0);
         return startTime >= today;
       }),
     endTime: Yup.mixed()
       .required('Due date is required')
       .test(
         'date-min',
-        'Due date must be later than create date',
-        (value, { parent }) => value.getTime() > parent.startTime.getTime()
+        'Due date must be later than start date',
+        (value, { parent }) => new Date(value).getTime() > new Date(parent.startTime).getTime()
       ),
   });
 
@@ -63,8 +65,8 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       title: currentAssignment?.title || '',
       description: currentAssignment?.description || '',
       // isRestrict: currentAssignment?.isRestrict || false,
-      startTime: currentAssignment?.startTime || new Date(),
-      endTime: currentAssignment?.endTime || null,
+      startTime: currentAssignment?.startTime ? new Date(currentAssignment.startTime) : new Date(),
+      endTime: currentAssignment?.endTime ? new Date(currentAssignment.endTime) : null,
     }),
     [currentAssignment]
   );
@@ -82,30 +84,50 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 
   useEffect(() => {
     if (currentAssignment) {
-      reset({ title: currentAssignment.title, description: currentAssignment.description });
+      const st = new Date(currentAssignment.startTime);
+      const et = new Date(currentAssignment.endTime);
+      reset({
+        title: currentAssignment.title,
+        description: currentAssignment.description,
+        startTime: st,
+        endTime: et,
+      });
     }
   }, [currentAssignment, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (currentAssignment) {
-        await updateAssignment(currentAssignment.assignmentId, data);
-        enqueueSnackbar('Update success!');
+        const response = await updateAssignment(currentAssignment.assignmentId, {
+          title: data.title,
+          description: data.description,
+          startTime: convertTime(data.startTime),
+          endTime: convertTime(data.endTime),
+        });
+        enqueueSnackbar(`${response.message}`);
       } else {
-        await createAssignment(params.cid, data);
-        enqueueSnackbar('Create success!');
+        const response = await createAssignment(params.cid, {
+          title: data.title,
+          description: data.description,
+          startTime: convertTime(data.startTime),
+          endTime: convertTime(data.endTime),
+        });
+        console.log(response);
+        enqueueSnackbar(`${response.message}`);
       }
       reset();
       router.back();
     } catch (error) {
       console.error(error);
-      if (currentAssignment) {
-        enqueueSnackbar('Update failed!', { variant: 'error' });
-      } else {
-        enqueueSnackbar('Create failed!', { variant: 'error' });
-      }
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
     }
   });
+
+  const convertTime = (time) => {
+    const utcDate = new Date(time.toISOString());
+    const localTimeOffset = time.getTimezoneOffset() * 60000; // in milliseconds
+    return new Date(utcDate.getTime() - localTimeOffset);
+  };
 
   const renderDetails = (
     <>
