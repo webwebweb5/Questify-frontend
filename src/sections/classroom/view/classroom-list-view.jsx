@@ -1,6 +1,7 @@
 'use client';
 
 import * as Yup from 'yup';
+import { mutate } from 'swr';
 import { useSnackbar } from 'notistack';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +17,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
-import { joinClassroom } from 'src/utils/axios';
+import { endpoints, joinClassroom } from 'src/utils/axios';
 
 import { useGetClassroom } from 'src/api/classroom';
 
@@ -65,9 +66,10 @@ export default function ClassroomListView() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const response = await joinClassroom(data.invitationCode);
-      enqueueSnackbar(`${response.data.message}`);
+      enqueueSnackbar(`${response.message}`);
       setPopupOpen(false);
       reset();
+      mutate(endpoints.classroom.list);
     } catch (error) {
       console.error(error);
       // 'There is no such invitation code, Please try again'

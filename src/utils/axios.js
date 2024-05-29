@@ -123,6 +123,11 @@ export const getLaboratoryById = async (laboratoryId) => {
   return res.data;
 };
 
+export const deleteLaboratory = async (laboratoryId) => {
+  const res = await axiosInstance.delete(`${endpoints.lab.crud}?laboratoryId=${laboratoryId}`);
+  return res.data;
+};
+
 // ----------------------------------------------------------------------
 
 export const getSubmissionsByLaboratoryId = async (laboratoryId) => {

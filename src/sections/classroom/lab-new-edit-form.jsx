@@ -26,8 +26,12 @@ export default function LabNewEditForm({ currentLab }) {
   const router = useRouter();
 
   const NewLabSchema = Yup.object().shape({
-    labTitle: Yup.string().required('Lab Title is required'),
-    problemStatement: Yup.string().required('Problem Statement is required'),
+    labTitle: Yup.string()
+      .required('Lab Title is required')
+      .max(50, 'Lab title must not exceed 50 characters'),
+    problemStatement: Yup.string()
+      .required('Problem Statement is required')
+      .max(1250, 'Lab title must not exceed 1250 characters'),
   });
 
   const defaultValues = useMemo(
@@ -77,7 +81,7 @@ export default function LabNewEditForm({ currentLab }) {
       router.push(paths.classroom.assignmentId(params.cid, params.aid));
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(error.message);
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
 
@@ -110,6 +114,15 @@ export default function LabNewEditForm({ currentLab }) {
               </Stack>
             </Stack>
           </Card>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isSubmitting}
+            sx={{ mt: 3 }}
+          >
+            {!currentLab ? 'Create Lab' : 'Save Changes'}
+          </LoadingButton>
         </Grid>
         <Grid item>
           <Divider orientation="vertical" sx={{ borderStyle: 'dashed', mx: 2 }} />
@@ -123,15 +136,6 @@ export default function LabNewEditForm({ currentLab }) {
           </Card>
         </Grid>
       </Grid>
-      <LoadingButton
-        type="submit"
-        variant="contained"
-        size="large"
-        loading={isSubmitting}
-        sx={{ mt: 3 }}
-      >
-        {!currentLab ? 'Create Lab' : 'Save Changes'}
-      </LoadingButton>
     </FormProvider>
   );
 }

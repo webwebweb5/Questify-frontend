@@ -1,6 +1,8 @@
+import { mutate } from 'swr';
 import { useState } from 'react';
 import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { enqueueSnackbar } from 'notistack';
 import { useParams, useRouter } from 'next/navigation';
 
 import { LoadingButton } from '@mui/lab';
@@ -19,14 +21,17 @@ import {
   ListItemText,
   DialogContent,
   DialogActions,
+  DialogContentText,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { useBoolean } from 'src/hooks/use-boolean';
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import { fDate } from 'src/utils/format-time';
+import { deleteLaboratory } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import Markdown from 'src/components/markdown';
@@ -54,6 +59,27 @@ export default function LabItem({ lab }) {
   const params = useParams();
 
   const [popupOpen, setPopupOpen] = useState(false);
+  const [popupDeleteOpen, setPopupDeleteOpen] = useState(false);
+
+  const loading = useBoolean(false);
+
+  const OnDeleteLab = async () => {
+    try {
+      loading.onTrue();
+      const response = await deleteLaboratory(laboratoryId);
+      enqueueSnackbar(`${response.message}`);
+      mutate(`/api/v1/laboratory/assignment?assignmentId=${params.aid}`);
+      setPopupDeleteOpen(false);
+    } catch (error) {
+      loading.onFalse();
+      console.error('Failed to delete Laboratory:', error);
+      enqueueSnackbar(`${error.message}`, {
+        variant: 'error',
+      });
+      setPopupDeleteOpen(false);
+    }
+    loading.onFalse();
+  };
 
   const renderDialog = (
     <Dialog fullWidth maxWidth="sm" open={popupOpen} onClose={() => setPopupOpen(false)}>
@@ -72,14 +98,50 @@ export default function LabItem({ lab }) {
         >
           Close
         </Button>
-        <LoadingButton
-          color="primary"
-          variant="contained"
-          // onClick=""
-          startIcon={<Iconify icon="carbon:play-filled-alt" />}
-          // loading={loading.value}
+        {role !== 'ProfAcc' && (
+          <LoadingButton
+            color="primary"
+            variant="contained"
+            onClick={() => router.push(paths.lab.question(laboratoryId))}
+            startIcon={<Iconify icon="carbon:play-filled-alt" />}
+            // loading={loading.value}
+          >
+            Start Lab
+          </LoadingButton>
+        )}
+      </DialogActions>
+    </Dialog>
+  );
+
+  const renderDelete = (
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={popupDeleteOpen}
+      onClose={() => setPopupDeleteOpen(false)}
+    >
+      <DialogTitle id="crop-dialog-title">Delete Confirmation</DialogTitle>
+      <DialogContent dividers style={{ position: 'relative' }}>
+        <DialogContentText id="alert-dialog-description">
+          Confirm to Delete Laboratory: {labTitle}
+        </DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => setPopupDeleteOpen(false)}
+          startIcon={<Iconify icon="eva:close-outline" />}
         >
-          Start Lab
+          Cancel
+        </Button>
+        <LoadingButton
+          color="error"
+          variant="contained"
+          onClick={OnDeleteLab}
+          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+          loading={loading.value}
+        >
+          Delete
         </LoadingButton>
       </DialogActions>
     </Dialog>
@@ -132,19 +194,22 @@ export default function LabItem({ lab }) {
               rowGap={1}
               columnGap={1}
               display="grid"
-              gridTemplateColumns="repeat(2, 1fr)"
+              gridTemplateColumns={`${role !== 'ProfAcc' && 'repeat(2, 1fr)'}`}
               sx={{ p: 3 }}
             >
+              {role !== 'ProfAcc' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ py: 1.5 }}
+                  startIcon={<Iconify icon="carbon:play-filled-alt" />}
+                  href={paths.lab.question(laboratoryId)}
+                >
+                  Start Lab
+                </Button>
+              )}
               <Button
-                variant="contained"
-                color="primary"
-                sx={{ py: 1.5 }}
-                startIcon={<Iconify icon="carbon:play-filled-alt" />}
-                href={paths.lab.question(laboratoryId)}
-              >
-                Start Lab
-              </Button>
-              <Button
+                fullWidth
                 variant="contained"
                 color="info"
                 sx={{ py: 1.5 }}
@@ -179,7 +244,7 @@ export default function LabItem({ lab }) {
 
           <MenuItem
             onClick={() => {
-              popover.onClose();
+              setPopupDeleteOpen(true);
             }}
             sx={{ color: 'error.main' }}
           >
@@ -190,6 +255,8 @@ export default function LabItem({ lab }) {
       )}
 
       {renderDialog}
+
+      {renderDelete}
     </>
   );
 }

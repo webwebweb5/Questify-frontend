@@ -63,9 +63,9 @@ export default function LabListView() {
           >
             Add New Lab (Manual)
           </Button>
-          <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
+          {/* <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
             Add New Lab (AI gen)
-          </Button>
+          </Button> */}
         </>
       )}
     </Container>
