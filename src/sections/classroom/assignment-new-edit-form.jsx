@@ -6,9 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import { Tooltip } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Unstable_Grid2';
+import { Tooltip, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -21,7 +21,7 @@ import { createAssignment, updateAssignment } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFSelect, RHFSwitch, RHFTextField } from 'src/components/hook-form';
 
 import AssignmentNewEditDate from './assignment-new-edit-date';
 
@@ -58,6 +58,13 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         'Due date must be later than start date',
         (value, { parent }) => new Date(value).getTime() > new Date(parent.startTime).getTime()
       ),
+    score: Yup.number()
+      .required('Score is required')
+      .min(0, 'Score must be at least 0')
+      .max(100, 'Score must not exceed 100'),
+    gradingCriteria: Yup.string()
+      .required('Grading method is required')
+      .oneOf(['AUTO', 'MANUAL', 'NOT_GRADE'], 'Invalid grading method'),
   });
 
   const defaultValues = useMemo(
@@ -67,6 +74,8 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       // isRestrict: currentAssignment?.isRestrict || false,
       startTime: currentAssignment?.startTime ? new Date(currentAssignment.startTime) : new Date(),
       endTime: currentAssignment?.endTime ? new Date(currentAssignment.endTime) : null,
+      score: currentAssignment?.score || '',
+      gradingCriteria: currentAssignment?.gradingCriteria || '',
     }),
     [currentAssignment]
   );
@@ -91,6 +100,8 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         description: currentAssignment.description,
         startTime: st,
         endTime: et,
+        score: currentAssignment.score,
+        gradingCriteria: currentAssignment.gradingCriteria,
       });
     }
   }, [currentAssignment, reset]);
@@ -161,6 +172,16 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
               placeholder="e.g. if/else and switch case"
             />
 
+            <AssignmentNewEditDate />
+
+            <RHFTextField name="score" label="Score" placeholder="e.g. 100" />
+
+            <RHFSelect name="gradingCriteria" label="Grading Method">
+              <MenuItem value="AUTO">AUTO</MenuItem>
+              <MenuItem value="MANUAL">MANUAL</MenuItem>
+              <MenuItem value="NOT_GRADE">NOT_GRADE</MenuItem>
+            </RHFSelect>
+
             <Stack direction="row">
               <RHFSwitch name="isRestrict" label="Restriction" />
               <Tooltip
@@ -173,8 +194,6 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
                 </IconButton>
               </Tooltip>
             </Stack>
-
-            <AssignmentNewEditDate />
           </Stack>
         </Card>
       </Grid>
@@ -211,5 +230,7 @@ AssignmentNewEditForm.propTypes = {
     isRestrict: PropTypes.bool,
     startTime: PropTypes.string,
     endTime: PropTypes.string,
+    score: PropTypes.number,
+    gradingCriteria: PropTypes.oneOf(['AUTO', 'MANUAL', 'NOT_GRADE']),
   }),
 };
