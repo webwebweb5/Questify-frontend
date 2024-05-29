@@ -6,7 +6,7 @@ import { Editor, loader } from '@monaco-editor/react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
-import { Box, Stack, alpha, Typography } from '@mui/material';
+import { Box, Stack, alpha, Button, Typography, MenuItem } from '@mui/material';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
@@ -14,6 +14,8 @@ import { useGetSubmissionsByLaboratoryId } from 'src/api/submission';
 
 import { SplashScreen } from 'src/components/loading-screen';
 import { ResizablePanel, ResizableHandle, ResizablePanelGroup } from 'src/components/ui/resizable';
+import { RHFSelect } from 'src/components/hook-form';
+import Iconify from 'src/components/iconify';
 
 const CustomResizablePanel = styled(ResizablePanel)(({ theme }) => ({
   borderRadius: 8,
@@ -75,7 +77,7 @@ export default function LabQuestionView() {
     >
       <ResizablePanelGroup direction="horizontal" className="gap-2">
         <CustomResizablePanel
-          defaultSize={0}
+          defaultSize={40}
           collapsedSize={0}
           collapsible
           minSize={3}
@@ -89,10 +91,10 @@ export default function LabQuestionView() {
           </Stack>
         </CustomResizablePanel>
         <ResizableHandle withHandle onDoubleClick={collapsePanel} />
-        <ResizablePanel defaultSize={50}>
+        <ResizablePanel defaultSize={60}>
           <ResizablePanelGroup direction="vertical" className="gap-2">
-            <CustomResizablePanel defaultSize={65} minSize={60} className="bg-[#1B212A]">
-              <div className="h-full">
+            <CustomResizablePanel defaultSize={70} minSize={60} className="bg-[#1B212A]">
+              <Stack sx={{ height: '100%', position: 'relative' }}>
                 <Editor
                   options={{
                     minimap: {
@@ -100,6 +102,7 @@ export default function LabQuestionView() {
                     },
                     lineDecorationsWidth: 0,
                     lineNumbersMinChars: 3,
+                    wordWrap: 'on',
                   }}
                   theme="myTheme"
                   defaultLanguage="javascript"
@@ -107,10 +110,24 @@ export default function LabQuestionView() {
                   onMount={handleEditorDidMount}
                   onChange={handleEditorChange}
                 />
-              </div>
+                <Stack
+                  spacing={2}
+                  direction="row"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 8,
+                    right: 18,
+                  }}
+                >
+                  <Button variant="outlined" startIcon={<Iconify icon="carbon:play-filled-alt" />}>
+                    Run
+                  </Button>
+                  <Button variant="contained">Submit</Button>
+                </Stack>
+              </Stack>
             </CustomResizablePanel>
             <ResizableHandle withHandle />
-            <CustomResizablePanel defaultSize={35} className="bg-[#1B212A]">
+            <CustomResizablePanel defaultSize={30} className="bg-[#1B212A]">
               This is Test case
             </CustomResizablePanel>
           </ResizablePanelGroup>
