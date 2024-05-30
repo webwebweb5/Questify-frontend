@@ -1,14 +1,18 @@
 'use client';
 
+import * as Yup from 'yup';
+import { mutate } from 'swr';
+import { useForm } from 'react-hook-form';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useRef, useState, useCallback } from 'react';
 import { Editor, loader } from '@monaco-editor/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
-import { Box, Tab, Tabs, Stack, alpha, Button, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Stack, alpha, Button, MenuItem, Typography } from '@mui/material';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -20,6 +24,7 @@ import { useGetSubmissionsByLaboratoryId } from 'src/api/submission';
 
 import Iconify from 'src/components/iconify';
 import { SplashScreen } from 'src/components/loading-screen';
+import FormProvider, { RHFSelect } from 'src/components/hook-form';
 import { ResizablePanel, ResizableHandle, ResizablePanelGroup } from 'src/components/ui/resizable';
 
 import LabProblemStatement from '../lab-problem-statement';
@@ -63,6 +68,8 @@ export default function LabQuestionView() {
 
   const [result, setResult] = useState(null);
 
+  const [currentLanguage, setCurrentLanguage] = useState('JavaScript');
+
   const [currentTab, setCurrentTab] = useState('one');
 
   const handleChangeTab = useCallback((event, newValue) => {
@@ -88,7 +95,7 @@ export default function LabQuestionView() {
     const code = editorRef?.current?.getValue();
     loading.onTrue();
     try {
-      const response = await updateAndExecuteSubmission(params.lid, 'JavaScript', code);
+      const response = await updateAndExecuteSubmission(params.lid, currentLanguage, code);
       const filteredOutput = response.data.output.split('\n').filter((line) => line.trim() !== '');
       setResult(filteredOutput);
       enqueueSnackbar(`${response.message}`, { variant: 'success' });
@@ -101,6 +108,39 @@ export default function LabQuestionView() {
     }
   };
 
+  const ChangeLanguageSchema = Yup.object().shape({
+    language: Yup.string()
+      .required('language is required')
+      .oneOf(['Java', 'JavaScript', 'Python', 'C'], 'Invalid language'),
+  });
+
+  const defaultValues = useMemo(
+    () => ({
+      language: '',
+    }),
+    []
+  );
+
+  const methods = useForm({
+    resolver: yupResolver(ChangeLanguageSchema),
+    defaultValues,
+  });
+
+  const { reset } = methods;
+
+  const handleLanguageChange = (e) => {
+    setCurrentLanguage(e.target.value);
+  };
+
+  useEffect(() => {
+    if (currentLanguage) {
+      reset({
+        language: currentLanguage,
+      });
+      mutate(`/submission?laboratoryId=${params.lid}`);
+    }
+  }, [currentLanguage, params.lid, reset]);
+
   loader.init().then((monaco) => {
     monaco.editor.defineTheme('myTheme', {
       base: 'vs-dark',
@@ -111,8 +151,6 @@ export default function LabQuestionView() {
       },
     });
   });
-
-  console.log(currentTab);
 
   if (isLoading) {
     return <SplashScreen />;
@@ -145,7 +183,17 @@ export default function LabQuestionView() {
         <ResizablePanel defaultSize={60}>
           <ResizablePanelGroup direction="vertical" className="gap-2">
             <CustomResizablePanel defaultSize={60} minSize={60} className="bg-[#1B212A]">
-              <Stack sx={{ height: '100%', position: 'relative', mt: 1 }}>
+              <Stack sx={{ height: '100%', position: 'relative' }}>
+                <FormProvider methods={methods}>
+                  <Stack sx={{ width: 'fit-content', mb: 1, minWidth: 112 }}>
+                    <RHFSelect name="language" onChange={handleLanguageChange}>
+                      <MenuItem value="JavaScript">JavaScript</MenuItem>
+                      <MenuItem value="Java">Java</MenuItem>
+                      <MenuItem value="Python">Python</MenuItem>
+                      <MenuItem value="C">C</MenuItem>
+                    </RHFSelect>
+                  </Stack>
+                </FormProvider>
                 <Editor
                   options={{
                     minimap: {
@@ -157,7 +205,9 @@ export default function LabQuestionView() {
                   }}
                   theme="myTheme"
                   defaultLanguage="javascript"
-                  defaultValue={submissions?.codeSnippets?.JavaScript}
+                  defaultValue={submissions?.codeSnippets?.JavaScript || ''}
+                  language={currentLanguage.toLowerCase()}
+                  value={submissions?.codeSnippets?.[currentLanguage]}
                   onMount={handleEditorDidMount}
                   onChange={handleEditorChange}
                 />
