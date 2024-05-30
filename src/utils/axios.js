@@ -128,10 +128,26 @@ export const deleteLaboratory = async (laboratoryId) => {
   return res.data;
 };
 
-// ----------------------------------------------------------------------
+// --------------------------Submissions---------------------------------
 
 export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
   const res = await axiosInstance.get(`${endpoints.submission.get}?laboratoryId=${laboratoryId}`);
+  return res.data;
+};
+
+export const updateAndExecuteSubmission = async (laboratoryId, language, code) => {
+  await axiosInstance.put(
+    `/api/v1/submission?laboratoryId=${laboratoryId}&language=${language}`,
+    code,
+    {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    }
+  );
+  const res = await axiosInstance.post(
+    `/api/v1/submission/execute?language=${language}&laboratoryId=${laboratoryId}`
+  );
   return res.data;
 };
 
@@ -161,5 +177,6 @@ export const endpoints = {
   },
   submission: {
     get: '/api/v1/submission',
+    execute: '/api/v1/submission/execute',
   },
 };
