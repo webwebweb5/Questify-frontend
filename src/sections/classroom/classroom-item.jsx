@@ -56,15 +56,15 @@ export default function ClassroomItem({ classroom }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const OnDeleteClassroom = async () => {
+    loading.onTrue();
     try {
-      loading.onTrue();
-      await deleteClassroom(classroomId);
-      enqueueSnackbar('Delete success!');
+      const response = await deleteClassroom(classroomId);
+      enqueueSnackbar(`${response.message}`);
       mutate(endpoints.classroom.list);
       setPopupOpen(false);
     } catch (error) {
       loading.onFalse();
-      enqueueSnackbar('Delete failed!', {
+      enqueueSnackbar(`${error.message}`, {
         variant: 'error',
       });
       console.error('Failed to delete Classroom:', error);

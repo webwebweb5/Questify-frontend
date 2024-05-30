@@ -55,15 +55,15 @@ export default function AssignmentItem({ assignment }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const OnDeleteAssignment = async () => {
+    loading.onTrue();
     try {
-      loading.onTrue();
-      await deleteAssignment(assignmentId);
-      enqueueSnackbar('Delete success!');
+      const response = await deleteAssignment(assignmentId);
+      enqueueSnackbar(`${response.message}`);
       setPopupOpen(false);
       mutate(`/assignment/classroom?classroomId=${params.cid}`);
     } catch (error) {
       loading.onFalse();
-      enqueueSnackbar('Delete failed!', {
+      enqueueSnackbar(`${error.message}`, {
         variant: 'error',
       });
       console.error('Failed to delete Assignment:', error);
