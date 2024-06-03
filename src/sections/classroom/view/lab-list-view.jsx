@@ -45,11 +45,25 @@ export default function LabListView() {
       >
         Back to all assignment
       </Button>
-      <Stack>
-        <Typography variant="h4"> {assignment?.title} </Typography>
-        <TextMaxLine variant="body2" sx={{ color: 'text.secondary' }}>
-          Due to {`${fDateTime(assignment?.startTime)}` || 'none'}
-        </TextMaxLine>
+      <Stack direction="row" justifyContent="space-between">
+        <Stack>
+          <Typography variant="h4"> {assignment?.title} </Typography>
+          <TextMaxLine variant="body2" sx={{ color: 'text.secondary' }}>
+            Due to {`${fDateTime(assignment?.startTime)}` || 'none'}
+          </TextMaxLine>
+        </Stack>
+        {role === 'ProfAcc' ? (
+          <Button variant="contained" color="primary">
+            Student Submission
+          </Button>
+        ) : (
+          <Stack>
+            <Typography variant="subtitle1">Points</Typography>
+            <TextMaxLine variant="body1" sx={{ color: 'text.secondary' }}>
+              0/10
+            </TextMaxLine>
+          </Stack>
+        )}
       </Stack>
 
       <LabList labs={laboratories} />
