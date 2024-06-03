@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { m } from 'framer-motion';
 import PropTypes from 'prop-types';
 
@@ -11,7 +12,20 @@ import AssignmentItem from './assignment-item';
 
 // ----------------------------------------------------------------------
 
+const maxPerPage = 6;
+
+// ----------------------------------------------------------------------
+
 export default function AssignmentList({ assignments }) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handleChangePage = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const startIndex = (currentPage - 1) * maxPerPage;
+  const currentAssignments = assignments.slice(startIndex, startIndex + maxPerPage);
+
   if (assignments.length === 0) {
     return <EmptyContent filled title="No Data" sx={{ my: 3, py: 10 }} />;
   }
@@ -19,7 +33,7 @@ export default function AssignmentList({ assignments }) {
     <>
       <MotionContainer>
         <Stack spacing={3} sx={{ mt: 5 }}>
-          {assignments.map((assignment) => (
+          {currentAssignments.map((assignment) => (
             <Box key={assignment.assignmentId} component={m.div} variants={varFade().inUp}>
               <AssignmentItem assignment={assignment} />
             </Box>
@@ -27,17 +41,18 @@ export default function AssignmentList({ assignments }) {
         </Stack>
       </MotionContainer>
 
-      {/* {assignments.length > 8 && ( */}
-      <Pagination
-        count={8}
-        sx={{
-          mt: 8,
-          [`& .${paginationClasses.ul}`]: {
-            justifyContent: 'center',
-          },
-        }}
-      />
-      {/* )} */}
+      {assignments.length > maxPerPage && (
+        <Pagination
+          count={Math.ceil(assignments.length / maxPerPage)}
+          onChange={handleChangePage}
+          sx={{
+            mt: 8,
+            [`& .${paginationClasses.ul}`]: {
+              justifyContent: 'center',
+            },
+          }}
+        />
+      )}
     </>
   );
 }
