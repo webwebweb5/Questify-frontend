@@ -66,7 +66,6 @@ export function useNavData() {
             path: paths.classroom.assignment(params.cid),
             icon: ICONS.assignment,
           },
-          { title: 'File', path: paths.classroom.file(params.cid), icon: ICONS.document },
           { title: 'Members', path: paths.classroom.members(params.cid), icon: ICONS.events },
           { title: 'Grade', path: paths.classroom.grade(params.cid), icon: ICONS.charts },
         ],
