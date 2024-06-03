@@ -58,10 +58,10 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         'Due date must be later than start date',
         (value, { parent }) => new Date(value).getTime() > new Date(parent.startTime).getTime()
       ),
-    score: Yup.number()
-      .required('Score is required')
-      .min(0, 'Score must be at least 0')
-      .max(100, 'Score must not exceed 100'),
+    // score: Yup.number()
+    //   .required('Score is required')
+    //   .min(0, 'Score must be at least 0')
+    //   .max(100, 'Score must not exceed 100'),
     gradingCriteria: Yup.string()
       .required('Grading method is required')
       .oneOf(['AUTO', 'MANUAL', 'NOT_GRADE'], 'Invalid grading method'),
@@ -74,7 +74,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       // isRestrict: currentAssignment?.isRestrict || false,
       startTime: currentAssignment?.startTime ? new Date(currentAssignment.startTime) : new Date(),
       endTime: currentAssignment?.endTime ? new Date(currentAssignment.endTime) : null,
-      score: currentAssignment?.score || '',
+      // score: currentAssignment?.score || '',
       gradingCriteria: currentAssignment?.gradingCriteria || '',
     }),
     [currentAssignment]
@@ -100,7 +100,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         description: currentAssignment.description,
         startTime: st,
         endTime: et,
-        score: currentAssignment.score,
+        // score: currentAssignment.score,
         gradingCriteria: currentAssignment.gradingCriteria,
       });
     }
@@ -174,7 +174,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
 
             <AssignmentNewEditDate />
 
-            <RHFTextField name="score" label="Score" placeholder="e.g. 100" />
+            {/* <RHFTextField name="score" label="Score" placeholder="e.g. 100" /> */}
 
             <RHFSelect name="gradingCriteria" label="Grading Method">
               <MenuItem value="AUTO">AUTO</MenuItem>
