@@ -61,8 +61,8 @@ export const deleteClassroom = async (classroomId) => {
   }
 };
 
-export const joinClassroom = async (classroomId) => {
-  const res = await axiosInstance.get(`/api/v1/classroom/join?classroomId=${classroomId}`);
+export const joinClassroom = async (invitationCode) => {
+  const res = await axiosInstance.get(`/api/v1/classroom/join?invitationCode=${invitationCode}`);
   return res.data;
 };
 
