@@ -42,7 +42,70 @@ const TABS = [
   },
 ];
 
+const TESTCASE_TABS = [
+  {
+    value: 'one',
+    label: 'Case 1',
+  },
+  {
+    value: 'two',
+    label: 'Case 2',
+  },
+  {
+    value: 'three',
+    label: 'Case 3',
+  },
+];
+
 // ----------------------------------------------------------------------
+
+// Custom styled Tab component
+const CustomTab = styled(Tab)(({ theme }) => ({
+  textTransform: 'none',
+  minWidth: 0,
+
+  [theme.breakpoints.up('sm')]: {
+    minWidth: 0,
+  },
+  fontWeight: theme.typography.fontWeightRegular,
+  marginRight: theme.spacing(1),
+  color: 'rgba(255, 255, 255, 0.7)',
+  '&:hover': {
+    color: '#fff',
+    opacity: 1,
+  },
+  '&.Mui-selected': {
+    color: '#fff',
+    px: 2,
+    backgroundColor: theme.palette.grey[500],
+    borderRadius: theme.shape.borderRadius,
+  },
+  '&.MuiTabs-indicator': {
+    display: 'none',
+  },
+}));
+
+const CustomTabs = styled(Tabs)(({ theme }) => ({
+  '& .MuiTab-root': {
+    margin: '8px 5px 8px 5px',
+    borderRadius: '6px',
+    lineHeight: 0,
+    minHeight: 'unset',
+    padding: '16px',
+    color: 'grey',
+    fontWeight: 700,
+    transition: 'all 0.3s ease',
+  },
+  '& .MuiTab-root.Mui-selected': {
+    backgroundColor: '#ffffff',
+    fontWeight: 700,
+    color: 'black',
+    transition: 'all 0.3s ease',
+  },
+  '& .MuiTabs-indicator': {
+    display: 'none', // Hide the indicator
+  },
+}));
 
 const CustomResizablePanel = styled(ResizablePanel)(({ theme }) => ({
   borderRadius: 8,
@@ -68,12 +131,18 @@ export default function LabQuestionView() {
 
   const [result, setResult] = useState(null);
 
+  const isError = useBoolean(false);
+
   const [currentLanguage, setCurrentLanguage] = useState('JavaScript');
 
   const [currentTab, setCurrentTab] = useState('one');
+  const [currentTestCaseTab, setCurrentTestCaseTab] = useState('one');
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
+  }, []);
+  const handleChangeTestCaseTab = useCallback((event, newValue) => {
+    setCurrentTestCaseTab(newValue);
   }, []);
 
   const handleEditorDidMount = (editor) => {
@@ -99,6 +168,8 @@ export default function LabQuestionView() {
       const filteredOutput = response.data.output.split('\n').filter((line) => line.trim() !== '');
       setResult(filteredOutput);
       enqueueSnackbar(`${response.message}`, { variant: 'success' });
+      // eslint-disable-next-line no-unused-expressions
+      response.data.stdErr ? isError.onTrue() : isError.onFalse();
       setCurrentTab('two');
     } catch (error) {
       console.error(error);
@@ -182,7 +253,7 @@ export default function LabQuestionView() {
         <ResizableHandle withHandle onDoubleClick={collapsePanel} />
         <ResizablePanel defaultSize={60}>
           <ResizablePanelGroup direction="vertical" className="gap-2">
-            <CustomResizablePanel defaultSize={60} minSize={60} className="bg-[#1B212A]">
+            <CustomResizablePanel defaultSize={60} className="bg-[#1B212A]">
               <Stack sx={{ height: '100%', position: 'relative' }}>
                 <FormProvider methods={methods}>
                   <Stack sx={{ width: 'fit-content', mb: 1, minWidth: 112 }}>
@@ -204,7 +275,7 @@ export default function LabQuestionView() {
                     wordWrap: 'on',
                   }}
                   theme="myTheme"
-                  defaultLanguage="javascript"
+                  defaultLanguage={currentLanguage.toLowerCase()}
                   defaultValue={submissions?.codeSnippets?.JavaScript || ''}
                   language={currentLanguage.toLowerCase()}
                   value={submissions?.codeSnippets?.[currentLanguage]}
@@ -235,7 +306,7 @@ export default function LabQuestionView() {
             <ResizableHandle withHandle />
             {/* 292A35 */}
             <CustomResizablePanel defaultSize={40} className="bg-[#1c1d24] !overflow-auto">
-              <Stack sx={{ px: 2, pb: 1 }}>
+              <Stack sx={{ px: 2, pb: 1, mb: 1, bgcolor: '#1B212A' }}>
                 <Tabs value={currentTab} onChange={handleChangeTab}>
                   {TABS.slice(0, 3).map((tab) => (
                     <Tab key={tab.value} value={tab.value} label={tab.label} />
@@ -243,7 +314,89 @@ export default function LabQuestionView() {
                 </Tabs>
               </Stack>
               {currentTab === 'one' ? (
-                <Stack sx={{ px: 2, pt: 1 }}>This is Test case</Stack>
+                <>
+                  <Stack sx={{ px: 2, pb: 1 }}>
+                    <CustomTabs value={currentTestCaseTab} onChange={handleChangeTestCaseTab}>
+                      {TESTCASE_TABS.map((tab) => (
+                        <CustomTab key={tab.value} value={tab.value} label={tab.label} />
+                      ))}
+                    </CustomTabs>
+                  </Stack>
+                  <Stack sx={{ px: 2, pb: 1 }}>
+                    {currentTestCaseTab === 'one' && (
+                      <Stack spacing={1}>
+                        <Typography variant="subtitle2">nums =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          [2, 7, 11, 15]
+                        </Box>
+                        <Typography variant="subtitle2">target =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          9
+                        </Box>
+                      </Stack>
+                    )}
+                    {currentTestCaseTab === 'two' && (
+                      <Stack spacing={1}>
+                        <Typography variant="subtitle2">nums =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          [3, 2, 4]
+                        </Box>
+                        <Typography variant="subtitle2">target =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          6
+                        </Box>
+                      </Stack>
+                    )}
+                    {currentTestCaseTab === 'three' && (
+                      <Stack spacing={1}>
+                        <Typography variant="subtitle2">nums =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          [3, 3, 7, 8]
+                        </Box>
+                        <Typography variant="subtitle2">target =</Typography>
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 1,
+                            bgcolor: '#1B212A',
+                          }}
+                        >
+                          10
+                        </Box>
+                      </Stack>
+                    )}
+                  </Stack>
+                </>
               ) : (
                 currentTab === 'two' && (
                   <Stack>
@@ -268,7 +421,15 @@ export default function LabQuestionView() {
                     </Stack>
 
                     <Stack sx={{ px: 2, py: 1 }}>
-                      {result ? result.map((line, i) => <p key={i}>&gt; {line}</p>) : <p>&gt;</p>}
+                      {result ? (
+                        result.map((line, i) => (
+                          <p key={i} className={`${isError.value ? 'text-red-500' : ''}`}>
+                            &gt; {line}
+                          </p>
+                        ))
+                      ) : (
+                        <p>&gt;</p>
+                      )}
                     </Stack>
                   </Stack>
                 )
