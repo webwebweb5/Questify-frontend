@@ -5,6 +5,7 @@ import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Card from '@mui/material/Card';
+import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -124,7 +125,10 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'flex-end' }} gap={2}>
+        <Button variant="contained" size="large" color="error" onClick={() => router.back()}>
+          Cancel
+        </Button>
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
           {!currentClassroom ? 'Create Classroom' : 'Save Changes'}
         </LoadingButton>

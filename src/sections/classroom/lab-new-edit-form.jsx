@@ -28,7 +28,7 @@ export default function LabNewEditForm({ currentLab }) {
   const NewLabSchema = Yup.object().shape({
     labTitle: Yup.string()
       .required('Lab Title is required')
-      .max(50, 'Lab title must not exceed 50 characters'),
+      .max(80, 'Lab title must not exceed 80 characters'),
     problemStatement: Yup.string()
       .required('Problem Statement is required')
       .max(1250, 'Lab title must not exceed 1250 characters'),

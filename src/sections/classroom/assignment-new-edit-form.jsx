@@ -8,10 +8,10 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Tooltip, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
+import { Button, Tooltip, MenuItem } from '@mui/material';
 
 import { useParams, useRouter } from 'src/routes/hooks';
 
@@ -39,10 +39,10 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
   const NewClassroomSchema = Yup.object().shape({
     title: Yup.string()
       .required('Title is required')
-      .max(50, 'Assignment title must not exceed 50 characters'),
+      .max(80, 'Assignment title must not exceed 80 characters'),
     description: Yup.string()
       .required('Description is required')
-      .max(100, 'Assignment description must not exceed 100 characters'),
+      .max(200, 'Assignment description must not exceed 200 characters'),
     startTime: Yup.mixed()
       .required('Start date is required')
       .test('date-min', 'Start date must be later or equal to current date', (value) => {
@@ -203,7 +203,10 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
   const renderActions = (
     <>
       {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'flex-end' }} gap={2}>
+        <Button variant="contained" size="large" color="error" onClick={() => router.back()}>
+          Cancel
+        </Button>
         <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
           {!currentAssignment ? 'Create Assignment' : 'Save Changes'}
         </LoadingButton>
