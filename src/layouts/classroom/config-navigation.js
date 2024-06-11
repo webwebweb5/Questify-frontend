@@ -67,7 +67,7 @@ export function useNavData() {
             icon: ICONS.assignment,
           },
           { title: 'Members', path: paths.classroom.members(params.cid), icon: ICONS.events },
-          { title: 'Grade', path: paths.classroom.grade(params.cid), icon: ICONS.charts },
+          { title: 'Grades', path: paths.classroom.grade(params.cid), icon: ICONS.charts },
         ],
       },
     ],
