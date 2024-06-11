@@ -17,7 +17,12 @@ export default function LabList({ labs }) {
   const role = useCurrentRole();
 
   if (labs.length === 0) {
-    return <EmptyContent filled title="No Data" sx={{ my: 3 }} />;
+    const message =
+      role === 'ProfAcc'
+        ? 'No labs found, Please create a new lab to get started.'
+        : 'No labs found!';
+
+    return <EmptyContent filled title={message} sx={{ my: 3, py: 10 }} />;
   }
 
   return (
