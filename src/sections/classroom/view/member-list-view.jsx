@@ -8,6 +8,7 @@ import {
   Avatar,
   Tooltip,
   TableRow,
+  MenuItem,
   Container,
   TableBody,
   TableCell,
@@ -18,10 +19,12 @@ import {
 } from '@mui/material';
 
 import { useResponsive } from 'src/hooks/use-responsive';
+import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +36,12 @@ const TABLE_HEAD = [
 
 export default function MemberListView() {
   const settings = useSettingsContext();
+
   const mdUp = useResponsive('up', 'md');
+
+  const role = useCurrentRole();
+
+  const popover = usePopover();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -102,20 +110,49 @@ export default function MemberListView() {
                   <TableCell align="left" sx={{ borderRadius: 0 }}>
                     <Typography>pathathai.n@cmu.ac.th</Typography>
                   </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                  >
-                    <IconButton>
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                  </TableCell>
+                  {role === 'ProfAcc' && (
+                    <TableCell
+                      align="right"
+                      sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    >
+                      <IconButton>
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableBody>
             </Table>
           </Scrollbar>
         </TableContainer>
       </Stack>
+
+      <CustomPopover
+        open={popover.open}
+        onClose={popover.onClose}
+        arrow="right-top"
+        sx={{ width: 140 }}
+      >
+        <MenuItem
+          onClick={() => {
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Remove
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            popover.onClose();
+          }}
+          sx={{ color: 'primary.main' }}
+        >
+          <Iconify icon="carbon:chart-histogram" />
+          Grades
+        </MenuItem>
+      </CustomPopover>
 
       <Stack spacing={2}>
         <Stack direction="row" justifyContent="space-between">
@@ -178,14 +215,16 @@ export default function MemberListView() {
                   <TableCell align="left" sx={{ borderRadius: 0 }}>
                     <Typography>phiriyakorn_m@cmu.ac.th</Typography>
                   </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                  >
-                    <IconButton>
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                  </TableCell>
+                  {role === 'ProfAcc' && (
+                    <TableCell
+                      align="right"
+                      sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    >
+                      <IconButton>
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    </TableCell>
+                  )}
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
@@ -216,14 +255,16 @@ export default function MemberListView() {
                   <TableCell align="left" sx={{ borderRadius: 0 }}>
                     <Typography>sorawee_sri@cmu.ac.th</Typography>
                   </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                  >
-                    <IconButton>
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                  </TableCell>
+                  {role === 'ProfAcc' && (
+                    <TableCell
+                      align="right"
+                      sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    >
+                      <IconButton onClick={popover.onOpen}>
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableBody>
             </Table>
