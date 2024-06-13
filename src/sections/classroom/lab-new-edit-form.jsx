@@ -29,9 +29,10 @@ export default function LabNewEditForm({ currentLab }) {
     labTitle: Yup.string()
       .required('Lab Title is required')
       .max(80, 'Lab title must not exceed 80 characters'),
+    description: Yup.string().max(200, 'Lab description must not exceed 200 characters'),
     problemStatement: Yup.string()
       .required('Problem Statement is required')
-      .max(1250, 'Lab title must not exceed 1250 characters'),
+      .max(1250, 'Lab Problem Statement must not exceed 1250 characters'),
   });
 
   const defaultValues = useMemo(

@@ -49,6 +49,9 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         const today = new Date();
         const startTime = new Date(value);
         today.setHours(0, 0, 0, 0);
+        if (new Date(currentAssignment?.startTime) < new Date()) {
+          return startTime <= today;
+        }
         return startTime >= today;
       }),
     endTime: Yup.mixed()
@@ -58,10 +61,6 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         'Due date must be later than start date',
         (value, { parent }) => new Date(value).getTime() > new Date(parent.startTime).getTime()
       ),
-    // score: Yup.number()
-    //   .required('Score is required')
-    //   .min(0, 'Score must be at least 0')
-    //   .max(100, 'Score must not exceed 100'),
     gradingCriteria: Yup.string()
       .required('Grading method is required')
       .oneOf(['AUTO', 'MANUAL', 'NOT_GRADE'], 'Invalid grading method'),
@@ -74,7 +73,6 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       // isRestrict: currentAssignment?.isRestrict || false,
       startTime: currentAssignment?.startTime ? new Date(currentAssignment.startTime) : new Date(),
       endTime: currentAssignment?.endTime ? new Date(currentAssignment.endTime) : null,
-      // score: currentAssignment?.score || '',
       gradingCriteria: currentAssignment?.gradingCriteria || '',
     }),
     [currentAssignment]
@@ -100,7 +98,6 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         description: currentAssignment.description,
         startTime: st,
         endTime: et,
-        // score: currentAssignment.score,
         gradingCriteria: currentAssignment.gradingCriteria,
       });
     }
@@ -172,9 +169,9 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
               placeholder="e.g. if/else and switch case"
             />
 
-            <AssignmentNewEditDate />
-
-            {/* <RHFTextField name="score" label="Score" placeholder="e.g. 100" /> */}
+            <AssignmentNewEditDate
+              disableStartTime={new Date(currentAssignment?.startTime) < new Date()}
+            />
 
             <RHFSelect name="gradingCriteria" label="Grading Method">
               <MenuItem value="AUTO">AUTO</MenuItem>
@@ -233,7 +230,6 @@ AssignmentNewEditForm.propTypes = {
     isRestrict: PropTypes.bool,
     startTime: PropTypes.string,
     endTime: PropTypes.string,
-    score: PropTypes.number,
     gradingCriteria: PropTypes.oneOf(['AUTO', 'MANUAL', 'NOT_GRADE']),
   }),
 };
