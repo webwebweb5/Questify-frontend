@@ -23,6 +23,7 @@ export const paths = {
     assignmentId: (cid, aid) => `/classroom/${cid}/assignment/${aid}`,
     assignmentLabEdit: (cid, aid, lid) => `/classroom/${cid}/assignment/${aid}/edit/${lid}`,
     LabNew: (cid, aid) => `/classroom/${cid}/assignment/${aid}/new`,
+    assignLabs: (cid, aid) => `/classroom/${cid}/assignment/${aid}/assign-lab`,
     file: (id) => `/classroom/${id}/file`,
     members: (id) => `/classroom/${id}/members`,
     grade: (id) => `/classroom/${id}/grade`,
@@ -30,5 +31,6 @@ export const paths = {
   // LABORATORY
   lab: {
     question: (lid) => `/lab/${lid}`,
+    result: (lid) => `/lab/${lid}/result`,
   },
 };
