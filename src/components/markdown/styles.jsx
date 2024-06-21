@@ -36,9 +36,19 @@ const StyledMarkdown = styled('div')(({ theme }) => {
     // List
     '& ul, & ol': {
       margin: 0,
+      paddingLeft: theme.spacing(4), // Ensure proper indentation
       '& li': {
         lineHeight: 2,
+        listStylePosition: 'inside', // Ensure list-style is displayed inside the list item
       },
+    },
+    // Ensure ordered lists display numbers
+    '& ol': {
+      listStyleType: 'decimal',
+    },
+    // Ensure unordered lists display dots
+    '& ul': {
+      listStyleType: 'disc',
     },
 
     // Blockquote

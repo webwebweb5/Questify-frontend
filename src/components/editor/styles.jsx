@@ -15,8 +15,7 @@ export const StyledEditor = styled(Box)(({ theme }) => ({
   },
   '& .ql-editor': {
     minHeight: 280,
-    // minHeight: 160,
-    maxHeight: 640,
+    maxHeight: 320,
     backgroundColor: alpha(theme.palette.grey[500], 0.08),
     '&.ql-blank:before': {
       fontStyle: 'normal',
