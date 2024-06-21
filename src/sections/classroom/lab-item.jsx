@@ -11,6 +11,7 @@ import {
   Card,
   Link,
   Stack,
+  alpha,
   Button,
   Dialog,
   Divider,
@@ -30,7 +31,6 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useCurrentRole } from 'src/hooks/use-current-role';
 
-import { fDate } from 'src/utils/format-time';
 import { deleteLaboratory } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
@@ -47,8 +47,8 @@ const truncateDescription = (description, maxLength) => {
 
 // ----------------------------------------------------------------------
 
-export default function LabItem({ lab }) {
-  const { laboratoryId, labTitle, description, problemStatement, endTime } = lab;
+export default function LabItem({ lab, index }) {
+  const { laboratoryId, labTitle, description, problemStatement, professor } = lab;
 
   const role = useCurrentRole();
 
@@ -149,17 +149,41 @@ export default function LabItem({ lab }) {
 
   return (
     <>
-      <Card component={m.card} variants={varFade().inUp}>
+      <Card
+        component={m.card}
+        variants={varFade().inUp}
+        sx={{ position: 'relative', overflow: 'visible' }}
+      >
         {role === 'ProfAcc' && (
           <IconButton onClick={popover.onOpen} sx={{ position: 'absolute', top: 8, right: 8 }}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         )}
 
+        <Box
+          component="span"
+          sx={{
+            px: 1,
+            top: 0,
+            ml: 2.5,
+            left: 0,
+            py: 0.25,
+            borderRadius: 2,
+            position: 'absolute',
+            color: 'common.black',
+            bgcolor: 'common.white',
+            transform: 'translateY(-50%)',
+            fontSize: (theme) => theme.typography.caption.fontSize,
+            fontWeight: (theme) => theme.typography.fontWeightSemiBold,
+            border: (theme) => `solid 1px ${alpha(theme.palette.grey['500'], 0.24)}`,
+          }}
+        >
+          Version {index + 1}
+        </Box>
+
         <Stack justifyContent="space-between" sx={{ height: '100%' }}>
-          <Stack sx={{ p: 3, pb: 2 }}>
+          <Stack spacing={1} sx={{ p: 3, pb: 2 }}>
             <ListItemText
-              sx={{ mb: 1 }}
               primary={
                 <Link component={RouterLink} href="" color="inherit">
                   {labTitle}
@@ -182,8 +206,17 @@ export default function LabItem({ lab }) {
               direction="row"
               sx={{ color: 'primary.main', typography: 'caption' }}
             >
-              <Iconify width={16} icon="carbon:time-filled" />
-              <Typography variant="caption">{`Due to ${fDate(endTime)}`}</Typography>
+              <Iconify width={16} icon="mdi:medal-outline" />
+              <Typography variant="caption">Score 10</Typography>
+            </Stack>
+
+            <Stack
+              spacing={1}
+              direction="row"
+              sx={{ color: 'primary.main', typography: 'caption' }}
+            >
+              <Iconify width={16} icon="charm:graduate-cap" />
+              <Typography variant="caption">{professor.displayName}</Typography>
             </Stack>
           </Stack>
 
@@ -197,26 +230,13 @@ export default function LabItem({ lab }) {
               gridTemplateColumns={`${role !== 'ProfAcc' && 'repeat(2, 1fr)'}`}
               sx={{ p: 3 }}
             >
-              {role !== 'ProfAcc' && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ py: 1.5 }}
-                  startIcon={<Iconify icon="carbon:play-filled-alt" />}
-                  href={paths.lab.question(laboratoryId)}
-                >
-                  Start Lab
-                </Button>
-              )}
               <Button
                 fullWidth
                 variant="contained"
-                color="info"
                 sx={{ py: 1.5 }}
-                startIcon={<Iconify icon="carbon:information-filled" />}
-                onClick={() => setPopupOpen(true)}
+                startIcon={<Iconify icon="mdi:assignment-ind-outline" />}
               >
-                Info
+                See Submissions
               </Button>
             </Box>
           </Box>
@@ -238,6 +258,16 @@ export default function LabItem({ lab }) {
           >
             <Iconify icon="solar:pen-bold" />
             Edit
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              setPopupOpen(true);
+            }}
+            sx={{ color: 'info.main' }}
+          >
+            <Iconify icon="carbon:information-filled" />
+            Info
           </MenuItem>
 
           <Divider sx={{ borderStyle: 'dashed' }} />
@@ -263,4 +293,5 @@ export default function LabItem({ lab }) {
 
 LabItem.propTypes = {
   lab: PropTypes.object,
+  index: PropTypes.number,
 };

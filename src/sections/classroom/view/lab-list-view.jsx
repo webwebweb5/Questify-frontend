@@ -2,9 +2,9 @@
 
 import { useParams } from 'next/navigation';
 
-import { Stack, Button } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { Stack, Button, Divider } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -53,8 +53,14 @@ export default function LabListView() {
           </TextMaxLine>
         </Stack>
         {role === 'ProfAcc' ? (
-          <Button variant="contained" color="primary">
-            Student Submission
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ height: 'fit-content', px: 2, py: 1 }}
+            startIcon={<Iconify icon="ic:outline-assignment" />}
+            href={paths.classroom.assignLabs(params.cid, params.aid)}
+          >
+            Assign Labs
           </Button>
         ) : (
           <Stack>
@@ -66,21 +72,24 @@ export default function LabListView() {
         )}
       </Stack>
 
+      <Typography variant="body2" sx={{ my: 3 }}>
+        {assignment?.description}
+      </Typography>
+
+      <Divider sx={{ borderStyle: 'dashed' }} />
+
       <LabList labs={laboratories} />
 
       {role === 'ProfAcc' && (
-        <>
-          <Button
-            variant="contained"
-            sx={{ py: 1.5, mr: 2 }}
-            href={paths.classroom.LabNew(params.cid, params.aid)}
-          >
-            Add New Lab (Manual)
-          </Button>
-          {/* <Button variant="contained" color="primary" sx={{ py: 1.5 }}>
-            Add New Lab (AI gen)
-          </Button> */}
-        </>
+        <Button
+          variant="contained"
+          sx={{ py: 1.5, mr: 2, mb: 3 }}
+          href={paths.classroom.LabNew(params.cid, params.aid)}
+          startIcon={<Iconify icon="mingcute:add-line" />}
+          color="info"
+        >
+          Add New Lab
+        </Button>
       )}
     </Container>
   );
