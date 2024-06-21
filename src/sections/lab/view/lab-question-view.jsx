@@ -14,6 +14,8 @@ import { styled } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
 import { Box, Tab, Tabs, Stack, alpha, Button, MenuItem, Typography } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 
@@ -299,7 +301,12 @@ export default function LabQuestionView() {
                   >
                     Run
                   </LoadingButton>
-                  <Button variant="contained">Submit</Button>
+                  <Button
+                    variant="contained"
+                    href={paths.lab.result(submissions?.laboratory?.laboratoryId)}
+                  >
+                    Submit
+                  </Button>
                 </Stack>
               </Stack>
             </CustomResizablePanel>
