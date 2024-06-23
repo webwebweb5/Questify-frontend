@@ -27,7 +27,7 @@ export async function POST(req) {
       },
     });
 
-    const { access_token: accessToken } = tokenResponse.data;
+    const { access_token: accessToken } = await tokenResponse.data;
 
     const questifyToken = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/auth/login`,
@@ -39,7 +39,7 @@ export async function POST(req) {
       }
     );
 
-    const { token } = questifyToken.data.data;
+    const { token } = await questifyToken.data.data;
 
     const getProfile = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/auth/profile`,
@@ -50,7 +50,7 @@ export async function POST(req) {
       }
     );
 
-    const user = getProfile.data.data;
+    const user = await getProfile.data.data;
 
     return NextResponse.json({ accessToken: token, user });
   } catch (error) {

@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
 
   const initialize = useCallback(async () => {
     try {
-      const accessToken = sessionStorage.getItem(STORAGE_KEY);
+      const accessToken = localStorage.getItem(STORAGE_KEY);
 
       if (accessToken) {
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
     const response = await axios.post('http://localhost:3000/api/auth/login', { code });
     const { accessToken, user } = response.data;
 
-    sessionStorage.setItem(STORAGE_KEY, accessToken);
+    localStorage.setItem(STORAGE_KEY, accessToken);
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
     dispatch({ type: 'LOGIN', payload: { user } });
@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
 
   // LOGOUT
   const logout = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY);
     delete axios.defaults.headers.common.Authorization;
 
     dispatch({ type: 'LOGOUT' });

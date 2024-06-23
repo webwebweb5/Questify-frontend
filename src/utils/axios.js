@@ -8,7 +8,7 @@ const axiosInstance = axios.create({ baseURL: BACKEND_API });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = sessionStorage.getItem('accessToken'); // Adjust this to where your token is stored
+    const accessToken = localStorage.getItem('accessToken'); // Adjust this to where your token is stored
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
