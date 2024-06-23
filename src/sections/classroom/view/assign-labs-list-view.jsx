@@ -2,15 +2,16 @@
 
 import { useParams } from 'next/navigation';
 
-import { Stack, Button, Container, Typography } from '@mui/material';
+import { Box, Stack, Button, Container, Typography } from '@mui/material';
 
-import { useGetClassroomById } from 'src/api/classroom';
+import { useGetStudentsByAssignmentId } from 'src/api/useUser';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
+import { SplashScreen } from 'src/components/loading-screen';
 
-import MemberList from '../member-list';
+import AssignLabsList from '../assign-labs-list';
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +20,21 @@ export default function AssignLabsListView() {
 
   const params = useParams();
 
-  const { classroom } = useGetClassroomById(params.cid);
+  const { students, isLoading, isError } = useGetStudentsByAssignmentId(params.aid);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
+  if (isError) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h6" color="error">
+          Error loading students.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -31,7 +46,7 @@ export default function AssignLabsListView() {
         <Stack direction="row" justifyContent="space-between">
           <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
             <Typography variant="h6">Students</Typography>
-            <Label>{classroom?.students?.length}</Label>
+            <Label>{students?.length}</Label>
           </Stack>
 
           <Button variant="contained" startIcon={<Iconify icon="ic:outline-auto-awesome" />}>
@@ -39,7 +54,7 @@ export default function AssignLabsListView() {
           </Button>
         </Stack>
 
-        <MemberList users={classroom?.students} assignLab />
+        <AssignLabsList students={students} />
       </Stack>
     </Container>
   );

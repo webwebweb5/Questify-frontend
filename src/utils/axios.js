@@ -128,6 +128,13 @@ export const deleteLaboratory = async (laboratoryId) => {
   return res.data;
 };
 
+export const assignLaboratory = async (assignmentId, studentId, laboratoryId) => {
+  const res = await axiosInstance.post(
+    `${endpoints.assignment.assign}?assignmentId=${assignmentId}&studentId=${studentId}&laboratoryId=${laboratoryId}`
+  );
+  return res.data;
+};
+
 // --------------------------Submissions---------------------------------
 
 export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
@@ -153,6 +160,13 @@ export const updateAndExecuteSubmission = async (laboratoryId, language, code) =
 
 // ----------------------------------------------------------------------
 
+export const getStudentsByAssignmentId = async (assignmentId) => {
+  const res = await axiosInstance.get(`${endpoints.user.student}?assignmentId=${assignmentId}`);
+  return res.data;
+};
+
+// ----------------------------------------------------------------------
+
 export const endpoints = {
   auth: {
     me: '/api/auth/me',
@@ -170,6 +184,7 @@ export const endpoints = {
     edit: '/api/v1/assignment',
     update: '/api/v1/assignment',
     delete: '/api/v1/assignment',
+    assign: '/api/v1/assignment/assign-laboratory',
   },
   lab: {
     list: '/api/v1/laboratory/assignment',
@@ -178,5 +193,8 @@ export const endpoints = {
   submission: {
     get: '/api/v1/submission',
     execute: '/api/v1/submission/execute',
+  },
+  user: {
+    student: '/api/v1/student',
   },
 };

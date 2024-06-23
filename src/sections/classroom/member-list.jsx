@@ -1,8 +1,4 @@
-import * as Yup from 'yup';
-import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
   Box,
@@ -20,11 +16,9 @@ import {
 } from '@mui/material';
 
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import FormProvider, { RHFSelect } from 'src/components/hook-form';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
@@ -37,30 +31,10 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function MemberList({ users, assignLab = false }) {
+export default function MemberList({ users }) {
   const mdUp = useResponsive('up', 'md');
 
-  const role = useCurrentRole();
-
   const popover = usePopover();
-
-  const LabVersionSchema = Yup.object().shape({
-    labVersion: Yup.string()
-      .required('language is required')
-      .oneOf(['Java', 'JavaScript', 'Python', 'C'], 'Invalid language'),
-  });
-
-  const defaultValues = useMemo(
-    () => ({
-      labVersion: '',
-    }),
-    []
-  );
-
-  const methods = useForm({
-    resolver: yupResolver(LabVersionSchema),
-    defaultValues,
-  });
 
   if (users?.length === 0) {
     return <Box>No User...</Box>;
@@ -96,7 +70,7 @@ export default function MemberList({ users, assignLab = false }) {
 
             <TableBody>
               {users?.map((user) => (
-                <TableRow>
+                <TableRow key={user.studentId}>
                   <TableCell sx={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Avatar
@@ -129,26 +103,11 @@ export default function MemberList({ users, assignLab = false }) {
                   <TableCell align="left" sx={{ borderRadius: 0 }}>
                     <Typography>{user.email}</Typography>
                   </TableCell>
-                  {role === 'ProfAcc' &&
-                    (assignLab ? (
-                      <TableCell>
-                        <FormProvider methods={methods}>
-                          <Stack sx={{ width: 'fit-content', minWidth: 140 }}>
-                            <RHFSelect name="labVersion" label="Lab Version">
-                              <MenuItem value="v1">Version 1</MenuItem>
-                              <MenuItem value="v2">Version 2</MenuItem>
-                              <MenuItem value="v3">Version 3</MenuItem>
-                            </RHFSelect>
-                          </Stack>
-                        </FormProvider>
-                      </TableCell>
-                    ) : (
-                      <TableCell align="right">
-                        <IconButton onClick={popover.onOpen}>
-                          <Iconify icon="eva:more-vertical-fill" />
-                        </IconButton>
-                      </TableCell>
-                    ))}
+                  <TableCell align="right">
+                    <IconButton onClick={popover.onOpen}>
+                      <Iconify icon="eva:more-vertical-fill" />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -188,5 +147,4 @@ export default function MemberList({ users, assignLab = false }) {
 
 MemberList.propTypes = {
   users: PropTypes.array,
-  assignLab: PropTypes.bool,
 };
