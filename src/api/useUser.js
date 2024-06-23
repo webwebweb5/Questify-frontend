@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { endpoints, getStudentsByAssignmentId } from 'src/utils/axios';
 
 export const useGetStudentsByAssignmentId = (assignmentId) => {
-  const { data, error, isLoading, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     assignmentId ? `${endpoints.user.student}?assignmentId=${assignmentId}` : null,
     () => getStudentsByAssignmentId(assignmentId)
   );
@@ -13,5 +13,6 @@ export const useGetStudentsByAssignmentId = (assignmentId) => {
     isLoading,
     isError: error,
     isValidating,
+    mutate,
   };
 };

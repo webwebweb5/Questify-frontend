@@ -135,6 +135,20 @@ export const assignLaboratory = async (assignmentId, studentId, laboratoryId) =>
   return res.data;
 };
 
+export const assignLaboratoriesRandomly = async (assignmentId) => {
+  const res = await axiosInstance.post(
+    `${endpoints.assignment.assignRandom}?assignmentId=${assignmentId}`
+  );
+  return res.data;
+};
+
+export const unassignLaboratory = async (assignmentId, studentId) => {
+  const res = await axiosInstance.delete(
+    `${endpoints.assignment.assign}?assignmentId=${assignmentId}&studentId=${studentId}`
+  );
+  return res.data;
+};
+
 // --------------------------Submissions---------------------------------
 
 export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
@@ -185,6 +199,7 @@ export const endpoints = {
     update: '/api/v1/assignment',
     delete: '/api/v1/assignment',
     assign: '/api/v1/assignment/assign-laboratory',
+    assignRandom: '/api/v1/assignment/assign-laboratory-random',
   },
   lab: {
     list: '/api/v1/laboratory/assignment',
