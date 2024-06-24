@@ -71,7 +71,7 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
       </Button>
 
       <Avatar
-        alt="avatar"
+        alt={classroom?.title?.charAt(0)}
         src=""
         variant="rounded"
         sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 3 }}

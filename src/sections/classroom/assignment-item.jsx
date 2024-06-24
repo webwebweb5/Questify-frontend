@@ -117,9 +117,15 @@ export default function AssignmentItem({ assignment }) {
           }}
         >
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt="avatar" src="" />
+            <Avatar alt={professor?.displayName}>
+              {professor?.displayName?.charAt(0).toUpperCase()}
+            </Avatar>
             <ListItemText
-              primary={professor.professorId}
+              primary={professor.displayName
+                .toLowerCase()
+                .split(' ')
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')}
               secondary={fDateTime(startTime)}
               secondaryTypographyProps={{
                 mt: 0.5,
@@ -145,6 +151,7 @@ export default function AssignmentItem({ assignment }) {
                   color="inherit"
                   component={RouterLink}
                   href={paths.classroom.assignmentId(params.cid, assignmentId)}
+                  sx={{ width: 'fit-content' }}
                 >
                   <TextMaxLine variant="subtitle1" line={2}>
                     {title}

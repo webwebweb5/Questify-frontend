@@ -24,6 +24,7 @@ export default function DashboardView() {
       <Typography variant="h3"> Welcome, </Typography>
       <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
         <Avatar
+          alt={user?.displayName}
           sx={{
             width: 36,
             height: 36,

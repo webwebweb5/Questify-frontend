@@ -74,6 +74,7 @@ export default function MemberList({ users }) {
                   <TableCell sx={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Avatar
+                        alt={user.firstName_EN}
                         sx={{
                           width: 36,
                           height: 36,

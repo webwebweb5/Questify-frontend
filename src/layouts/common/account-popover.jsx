@@ -69,6 +69,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
+          alt={user?.displayName?.charAt(0).toUpperCase()}
           sx={{
             width: 36,
             height: 36,
