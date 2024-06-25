@@ -27,7 +27,7 @@ export default function LabCreateView() {
           { name: 'Create Lab' },
         ]}
         sx={{
-          mb: { xs: 3, md: 5 },
+          mb: 3,
         }}
       />
 

@@ -7,12 +7,12 @@ import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { Editor, loader } from '@monaco-editor/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
-import { Box, Tab, Tabs, Stack, alpha, Button, MenuItem, Typography } from '@mui/material';
+import { Box, Stack, alpha, Button, MenuItem } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 
@@ -21,93 +21,18 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { updateAndExecuteSubmission } from 'src/utils/axios';
 
-import { useAuthContext } from 'src/auth/hooks';
 import { useGetSubmissionsByLaboratoryId } from 'src/api/submission';
+import { useGetTestCasesByLaboratoryId } from 'src/api/useTestCases';
 
 import Iconify from 'src/components/iconify';
 import { SplashScreen } from 'src/components/loading-screen';
 import FormProvider, { RHFSelect } from 'src/components/hook-form';
 import { ResizablePanel, ResizableHandle, ResizablePanelGroup } from 'src/components/ui/resizable';
 
+import LabTestCase from '../lab-testcase';
 import LabProblemStatement from '../lab-problem-statement';
 
 // ----------------------------------------------------------------------
-
-const TABS = [
-  {
-    value: 'one',
-    label: 'Test Case',
-  },
-  {
-    value: 'two',
-    label: 'Terminal',
-  },
-];
-
-const TESTCASE_TABS = [
-  {
-    value: 'one',
-    label: 'Case 1',
-  },
-  {
-    value: 'two',
-    label: 'Case 2',
-  },
-  {
-    value: 'three',
-    label: 'Case 3',
-  },
-];
-
-// ----------------------------------------------------------------------
-
-// Custom styled Tab component
-const CustomTab = styled(Tab)(({ theme }) => ({
-  textTransform: 'none',
-  minWidth: 0,
-
-  [theme.breakpoints.up('sm')]: {
-    minWidth: 0,
-  },
-  fontWeight: theme.typography.fontWeightRegular,
-  marginRight: theme.spacing(1),
-  color: 'rgba(255, 255, 255, 0.7)',
-  '&:hover': {
-    color: '#fff',
-    opacity: 1,
-  },
-  '&.Mui-selected': {
-    color: '#fff',
-    px: 2,
-    backgroundColor: theme.palette.grey[500],
-    borderRadius: theme.shape.borderRadius,
-  },
-  '&.MuiTabs-indicator': {
-    display: 'none',
-  },
-}));
-
-const CustomTabs = styled(Tabs)(({ theme }) => ({
-  '& .MuiTab-root': {
-    margin: '8px 5px 8px 5px',
-    borderRadius: '6px',
-    lineHeight: 0,
-    minHeight: 'unset',
-    padding: '16px',
-    color: 'grey',
-    fontWeight: 700,
-    transition: 'all 0.3s ease',
-  },
-  '& .MuiTab-root.Mui-selected': {
-    backgroundColor: '#ffffff',
-    fontWeight: 700,
-    color: 'black',
-    transition: 'all 0.3s ease',
-  },
-  '& .MuiTabs-indicator': {
-    display: 'none', // Hide the indicator
-  },
-}));
 
 const CustomResizablePanel = styled(ResizablePanel)(({ theme }) => ({
   borderRadius: 8,
@@ -120,8 +45,6 @@ const CustomResizablePanel = styled(ResizablePanel)(({ theme }) => ({
 export default function LabQuestionView() {
   const params = useParams();
   const editorRef = useRef(null);
-
-  const { user } = useAuthContext();
 
   const lgUp = useResponsive('up', 'lg');
 
@@ -138,14 +61,10 @@ export default function LabQuestionView() {
   const [currentLanguage, setCurrentLanguage] = useState('JavaScript');
 
   const [currentTab, setCurrentTab] = useState('one');
-  const [currentTestCaseTab, setCurrentTestCaseTab] = useState('one');
 
-  const handleChangeTab = useCallback((event, newValue) => {
-    setCurrentTab(newValue);
-  }, []);
-  const handleChangeTestCaseTab = useCallback((event, newValue) => {
-    setCurrentTestCaseTab(newValue);
-  }, []);
+  const { testCases, isTestCaseLoading, isTestCaseError } = useGetTestCasesByLaboratoryId(
+    params.lid
+  );
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
@@ -166,13 +85,24 @@ export default function LabQuestionView() {
     const code = editorRef?.current?.getValue();
     loading.onTrue();
     try {
-      const response = await updateAndExecuteSubmission(params.lid, currentLanguage, code);
-      const filteredOutput = response.data.output.split('\n').filter((line) => line.trim() !== '');
-      setResult(filteredOutput);
-      enqueueSnackbar(`${response.message}`, { variant: 'success' });
-      // eslint-disable-next-line no-unused-expressions
-      response.data.stdErr ? isError.onTrue() : isError.onFalse();
-      setCurrentTab('two');
+      // eslint-disable-next-line no-restricted-syntax
+      for (const testCase of testCases) {
+        // eslint-disable-next-line no-await-in-loop
+        const response = await updateAndExecuteSubmission(
+          params.lid,
+          testCase.testCaseId,
+          currentLanguage,
+          code
+        );
+        console.log(response.data);
+      }
+      // const response = await updateAndExecuteSubmission(params.lid, currentLanguage, code);
+      // const filteredOutput = response.data.output.split('\n').filter((line) => line.trim() !== '');
+      // setResult(filteredOutput);
+      // enqueueSnackbar(`${response.message}`, { variant: 'success' });
+      // // eslint-disable-next-line no-unused-expressions
+      // response.data.stdErr ? isError.onTrue() : isError.onFalse();
+      // setCurrentTab('two');
     } catch (error) {
       console.error(error);
       enqueueSnackbar(`${error.message}`, { variant: 'error' });
@@ -225,7 +155,7 @@ export default function LabQuestionView() {
     });
   });
 
-  if (isLoading) {
+  if (isLoading && isTestCaseLoading) {
     return <SplashScreen />;
   }
 
@@ -313,134 +243,15 @@ export default function LabQuestionView() {
             <ResizableHandle withHandle />
             {/* 292A35 */}
             <CustomResizablePanel defaultSize={40} className="bg-[#1c1d24] !overflow-auto">
-              <Stack sx={{ px: 2, pb: 1, mb: 1, bgcolor: '#1B212A' }}>
-                <Tabs value={currentTab} onChange={handleChangeTab}>
-                  {TABS.slice(0, 3).map((tab) => (
-                    <Tab key={tab.value} value={tab.value} label={tab.label} />
-                  ))}
-                </Tabs>
-              </Stack>
-              {currentTab === 'one' ? (
-                <>
-                  <Stack sx={{ px: 2, pb: 1 }}>
-                    <CustomTabs value={currentTestCaseTab} onChange={handleChangeTestCaseTab}>
-                      {TESTCASE_TABS.map((tab) => (
-                        <CustomTab key={tab.value} value={tab.value} label={tab.label} />
-                      ))}
-                    </CustomTabs>
-                  </Stack>
-                  <Stack sx={{ px: 2, pb: 1 }}>
-                    {currentTestCaseTab === 'one' && (
-                      <Stack spacing={1}>
-                        <Typography variant="subtitle2">nums =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          [2, 7, 11, 15]
-                        </Box>
-                        <Typography variant="subtitle2">target =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          9
-                        </Box>
-                      </Stack>
-                    )}
-                    {currentTestCaseTab === 'two' && (
-                      <Stack spacing={1}>
-                        <Typography variant="subtitle2">nums =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          [3, 2, 4]
-                        </Box>
-                        <Typography variant="subtitle2">target =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          6
-                        </Box>
-                      </Stack>
-                    )}
-                    {currentTestCaseTab === 'three' && (
-                      <Stack spacing={1}>
-                        <Typography variant="subtitle2">nums =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          [3, 3, 7, 8]
-                        </Box>
-                        <Typography variant="subtitle2">target =</Typography>
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 1,
-                            bgcolor: '#1B212A',
-                          }}
-                        >
-                          10
-                        </Box>
-                      </Stack>
-                    )}
-                  </Stack>
-                </>
-              ) : (
-                currentTab === 'two' && (
-                  <Stack>
-                    <Stack sx={{ pt: 1 }} direction="row">
-                      <Stack
-                        sx={{ px: 1, backgroundColor: 'primary.main', width: 'fit-content' }}
-                        direction="row"
-                        alignItems="center"
-                      >
-                        <Iconify icon="quill:folder-open" sx={{ mr: 1 }} />
-                        <Typography variant="body2">~/{user.userName}@questify</Typography>
-                      </Stack>
-                      <Box
-                        sx={{
-                          width: 0,
-                          height: 0,
-                          borderTop: '12px solid transparent',
-                          borderBottom: '12px solid transparent',
-                          borderLeft: (theme) => `solid 12px ${theme.palette.primary.main}`,
-                        }}
-                      />
-                    </Stack>
-
-                    <Stack sx={{ px: 2, py: 1 }}>
-                      {result ? (
-                        result.map((line, i) => (
-                          <p key={i} className={`${isError.value ? 'text-red-500' : ''}`}>
-                            &gt; {line}
-                          </p>
-                        ))
-                      ) : (
-                        <p>&gt;</p>
-                      )}
-                    </Stack>
-                  </Stack>
-                )
-              )}
+              <LabTestCase
+                testCases={testCases}
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
+                result={result}
+                isCompileError={isError}
+                isTestCaseLoading={isTestCaseLoading}
+                isTestCaseError={isTestCaseError}
+              />
             </CustomResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

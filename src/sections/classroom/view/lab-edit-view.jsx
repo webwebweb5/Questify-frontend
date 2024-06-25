@@ -32,7 +32,7 @@ export default function LabEditView({ lab }) {
           { name: 'Calculate tax' },
         ]}
         sx={{
-          mb: { xs: 3, md: 5 },
+          mb: 3,
         }}
       />
       <LabNewEditForm currentLab={laboratory} />

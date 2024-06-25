@@ -19,6 +19,9 @@ import {
   DialogContentText,
 } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
+
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { endpoints, assignLaboratoriesRandomly } from 'src/utils/axios';
@@ -109,6 +112,16 @@ export default function AssignLabsListView() {
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+        <Button
+          component={RouterLink}
+          href={paths.classroom.assignmentId(params.cid, params.aid)}
+          color="inherit"
+          startIcon={<Iconify icon="carbon:chevron-left" />}
+          sx={{ mb: 3 }}
+        >
+          Back to all labs
+        </Button>
+
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="h4"> Assign Labs </Typography>
         </Stack>

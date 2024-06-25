@@ -156,7 +156,7 @@ export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
   return res.data;
 };
 
-export const updateAndExecuteSubmission = async (laboratoryId, language, code) => {
+export const updateAndExecuteSubmission = async (laboratoryId, testCaseId, language, code) => {
   await axiosInstance.put(
     `/api/v1/submission?laboratoryId=${laboratoryId}&language=${language}`,
     code,
@@ -167,15 +167,52 @@ export const updateAndExecuteSubmission = async (laboratoryId, language, code) =
     }
   );
   const res = await axiosInstance.post(
-    `/api/v1/submission/execute?language=${language}&laboratoryId=${laboratoryId}`
+    `/api/v1/submission/execute?language=${language}&laboratoryId=${laboratoryId}&testCaseId=${testCaseId}`
   );
   return res.data;
 };
+// export const updateAndExecuteSubmission = async (laboratoryId, language, code) => {
+//   await axiosInstance.put(
+//     `/api/v1/submission?laboratoryId=${laboratoryId}&language=${language}`,
+//     code,
+//     {
+//       headers: {
+//         'Content-Type': 'text/plain',
+//       },
+//     }
+//   );
+//   const res = await axiosInstance.post(
+//     `/api/v1/submission/execute?language=${language}&laboratoryId=${laboratoryId}`
+//   );
+//   return res.data;
+// };
 
 // ----------------------------------------------------------------------
 
 export const getStudentsByAssignmentId = async (assignmentId) => {
   const res = await axiosInstance.get(`${endpoints.user.student}?assignmentId=${assignmentId}`);
+  return res.data;
+};
+
+// ----------------------------------------------------------------------
+
+export const getTestCasesByLaboratoryId = async (laboratoryId) => {
+  const res = await axiosInstance.get(`${endpoints.testCase.getAll}?laboratoryId=${laboratoryId}`);
+  return res.data;
+};
+
+export const createTestCase = async (laboratoryId, testCaseData) => {
+  const res = await axiosInstance.post(
+    `${endpoints.testCase.create}?laboratoryId=${laboratoryId}`,
+    testCaseData
+  );
+  return res.data;
+};
+
+export const deleteAllTestCases = async (laboratoryId) => {
+  const res = await axiosInstance.delete(
+    `${endpoints.testCase.delAll}?laboratoryId=${laboratoryId}`
+  );
   return res.data;
 };
 
@@ -211,5 +248,10 @@ export const endpoints = {
   },
   user: {
     student: '/api/v1/student',
+  },
+  testCase: {
+    getAll: '/api/v1/testcase/laboratory',
+    create: '/api/v1/testcase',
+    delAll: '/api/v1/testcase/all',
   },
 };
