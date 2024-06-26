@@ -1,10 +1,19 @@
-import PropTypes from 'prop-types';
+'use client';
 
+import { mutate } from 'swr';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
+import { useParams } from 'next/navigation';
+
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Stack,
   Table,
   Avatar,
+  Dialog,
+  Button,
   TableRow,
   MenuItem,
   TableBody,
@@ -12,10 +21,17 @@ import {
   TableHead,
   IconButton,
   Typography,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   TableContainer,
+  DialogContentText,
 } from '@mui/material';
 
+import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
+
+import { removeStudentFromClassroom } from 'src/utils/axios';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -36,8 +52,68 @@ export default function MemberList({ users }) {
 
   const popover = usePopover();
 
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const loading = useBoolean(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const params = useParams();
+
+  const OnRemoveStudent = async () => {
+    if (!selectedStudent) return;
+
+    loading.onTrue();
+    try {
+      const response = await removeStudentFromClassroom(params.cid, selectedStudent.studentId);
+      enqueueSnackbar(`${response.message}`, { variant: 'success' });
+      mutate(`api/v1/classroom?classroomId=${params.cid}`); // Refetch students
+      setPopupOpen(false);
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
+      console.error('Failed to remove student:', error);
+    } finally {
+      loading.onFalse();
+    }
+  };
+
+  const handleRemoveClick = (student) => {
+    setSelectedStudent(student);
+    setPopupOpen(true);
+  };
+
+  const renderRemove = (
+    <Dialog fullWidth maxWidth="sm" open={popupOpen} onClose={() => setPopupOpen(false)}>
+      <DialogTitle>Remove Confirmation</DialogTitle>
+      <DialogContent dividers>
+        <DialogContentText>
+          Confirm to remove student: {selectedStudent?.displayName} ({selectedStudent?.studentId})
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => setPopupOpen(false)}
+          startIcon={<Iconify icon="eva:close-outline" />}
+        >
+          Cancel
+        </Button>
+        <LoadingButton
+          color="error"
+          variant="contained"
+          onClick={OnRemoveStudent}
+          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+          loading={loading.value}
+        >
+          Remove
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
+
   if (users?.length === 0) {
-    return <Box>No User...</Box>;
+    return <Box>Student not found</Box>;
   }
 
   return (
@@ -71,15 +147,9 @@ export default function MemberList({ users }) {
             <TableBody>
               {users?.map((user) => (
                 <TableRow key={user.studentId}>
-                  <TableCell sx={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
+                  <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
-                      <Avatar
-                        alt={user.firstName_EN}
-                        sx={{
-                          width: 36,
-                          height: 36,
-                        }}
-                      >
+                      <Avatar alt={user.firstName_EN} sx={{ width: 36, height: 36 }}>
                         {user.firstName_EN.charAt(0)}
                       </Avatar>
                       <Box sx={{ display: 'flex', flexDirection: 'column', width: 'fit-content' }}>
@@ -101,11 +171,16 @@ export default function MemberList({ users }) {
                       </Box>
                     </Stack>
                   </TableCell>
-                  <TableCell align="left" sx={{ borderRadius: 0 }}>
+                  <TableCell align="left">
                     <Typography>{user.email}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton onClick={popover.onOpen}>
+                    <IconButton
+                      onClick={(e) => {
+                        popover.onOpen(e);
+                        setSelectedStudent(user);
+                      }}
+                    >
                       <Iconify icon="eva:more-vertical-fill" />
                     </IconButton>
                   </TableCell>
@@ -122,12 +197,7 @@ export default function MemberList({ users }) {
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-          sx={{ color: 'primary.main' }}
-        >
+        <MenuItem onClick={() => popover.onClose()} sx={{ color: 'primary.main' }}>
           <Iconify icon="carbon:chart-histogram" />
           Grades
         </MenuItem>
@@ -135,6 +205,7 @@ export default function MemberList({ users }) {
         <MenuItem
           onClick={() => {
             popover.onClose();
+            handleRemoveClick(selectedStudent);
           }}
           sx={{ color: 'error.main' }}
         >
@@ -142,6 +213,8 @@ export default function MemberList({ users }) {
           Remove
         </MenuItem>
       </CustomPopover>
+
+      {renderRemove}
     </>
   );
 }

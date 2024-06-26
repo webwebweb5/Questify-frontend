@@ -66,6 +66,13 @@ export const joinClassroom = async (invitationCode) => {
   return res.data;
 };
 
+export const removeStudentFromClassroom = async (classroomId, studentId) => {
+  const res = await axiosInstance.delete(
+    `${endpoints.classroom.removeStudent}?classroomId=${classroomId}&studentId=${studentId}`
+  );
+  return res.data;
+};
+
 // --------------------------Assignment----------------------------------
 
 export const getAssignments = async (classroomId) => {
@@ -228,6 +235,7 @@ export const endpoints = {
     list: '/api/v1/classroom/',
     create: '/api/v1/classroom/',
     details: '/api/v1/classroom',
+    removeStudent: '/api/v1/classroom/remove',
   },
   assignment: {
     list: '/api/v1/assignment/classroom',
