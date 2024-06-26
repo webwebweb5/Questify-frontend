@@ -11,18 +11,15 @@ import {
   Avatar,
   Tooltip,
   TableRow,
-  MenuItem,
   Container,
   TableBody,
   TableCell,
   TableHead,
   Typography,
-  IconButton,
   TableContainer,
 } from '@mui/material';
 
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useCurrentRole } from 'src/hooks/use-current-role';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 
 import { useGetClassroomById } from 'src/api/classroom';
@@ -31,7 +28,6 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 import MemberList from '../member-list';
 
@@ -47,10 +43,6 @@ export default function MemberListView() {
   const settings = useSettingsContext();
 
   const mdUp = useResponsive('up', 'md');
-
-  const role = useCurrentRole();
-
-  const popover = usePopover();
 
   const params = useParams();
 
@@ -148,49 +140,12 @@ export default function MemberListView() {
                   <TableCell align="left" sx={{ borderRadius: 0 }}>
                     <Typography>{classroom?.professor?.email}</Typography>
                   </TableCell>
-                  {role === 'ProfAcc' && (
-                    <TableCell
-                      align="right"
-                      sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                    >
-                      <IconButton onClick={popover.onOpen}>
-                        <Iconify icon="eva:more-vertical-fill" />
-                      </IconButton>
-                    </TableCell>
-                  )}
                 </TableRow>
               </TableBody>
             </Table>
           </Scrollbar>
         </TableContainer>
       </Stack>
-
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="right-top"
-        sx={{ width: 140 }}
-      >
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-          sx={{ color: 'primary.main' }}
-        >
-          <Iconify icon="carbon:chart-histogram" />
-          Grades
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Remove
-        </MenuItem>
-      </CustomPopover>
 
       <Stack spacing={2}>
         <Stack direction="row" justifyContent="space-between">
