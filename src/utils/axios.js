@@ -156,6 +156,13 @@ export const unassignLaboratory = async (assignmentId, studentId) => {
   return res.data;
 };
 
+export const unassignAllLaboratories = async (assignmentId) => {
+  const res = await axiosInstance.delete(
+    `${endpoints.assignment.unAssignAll}?assignmentId=${assignmentId}`
+  );
+  return res.data;
+};
+
 // --------------------------Submissions---------------------------------
 
 export const getSubmissionsByLaboratoryId = async (laboratoryId) => {
@@ -245,6 +252,7 @@ export const endpoints = {
     delete: '/api/v1/assignment',
     assign: '/api/v1/assignment/assign-laboratory',
     assignRandom: '/api/v1/assignment/assign-laboratory-random',
+    unAssignAll: '/api/v1/assignment/assign-laboratory/all',
   },
   lab: {
     list: '/api/v1/laboratory/assignment',

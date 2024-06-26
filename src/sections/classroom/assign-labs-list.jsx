@@ -109,14 +109,14 @@ export default function AssignLabsList({ students }) {
   const handleUnassign = async () => {
     loading.onTrue();
     try {
-      await unassignLaboratory(params.aid, selectedStudentId);
-      enqueueSnackbar('Laboratory unassigned successfully!', { variant: 'success' });
+      const response = await unassignLaboratory(params.aid, selectedStudentId);
+      enqueueSnackbar(`${response.message}`, { variant: 'success' });
       mutate(`${endpoints.user.student}?assignmentId=${params.aid}`);
       setValue(`labVersion-${selectedStudentId}`, '');
       setSelectedStudentId(null); // Clear selected studentId after unassign
     } catch (error) {
       console.error(error);
-      enqueueSnackbar('Unassign failed! Please try again.', { variant: 'error' });
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
     } finally {
       loading.onFalse();
       setPopupOpen(false);

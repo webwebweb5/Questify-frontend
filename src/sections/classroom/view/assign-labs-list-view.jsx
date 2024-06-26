@@ -24,7 +24,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { endpoints, assignLaboratoriesRandomly } from 'src/utils/axios';
+import { endpoints, unassignAllLaboratories, assignLaboratoriesRandomly } from 'src/utils/axios';
 
 import { useGetStudentsByAssignmentId } from 'src/api/useUser';
 
@@ -49,17 +49,18 @@ export default function AssignLabsListView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const [popupOpen, setPopupOpen] = useState(false);
+  const [unAssignPopupOpen, setUnAssignPopupOpen] = useState(false);
 
   const handleRandomAssign = async () => {
     loading.onTrue();
     try {
-      await assignLaboratoriesRandomly(params.aid);
-      enqueueSnackbar('Laboratories randomly assigned successfully!', { variant: 'success' });
+      const response = await assignLaboratoriesRandomly(params.aid);
+      enqueueSnackbar(`${response.message}`, { variant: 'success' });
       mutate(`${endpoints.user.student}?assignmentId=${params.aid}`);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error(error);
-      enqueueSnackbar('Random assignment failed! Please try again.', { variant: 'error' });
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
     } finally {
       loading.onFalse();
       setPopupOpen(false);
@@ -95,6 +96,54 @@ export default function AssignLabsListView() {
     </Dialog>
   );
 
+  const handleUnAssignAll = async () => {
+    loading.onTrue();
+    try {
+      const response = await unassignAllLaboratories(params.aid);
+      enqueueSnackbar(`${response.message}`, { variant: 'success' });
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
+    } finally {
+      loading.onFalse();
+      setPopupOpen(false);
+    }
+  };
+
+  const renderUnAssignAllConfirmation = (
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={unAssignPopupOpen}
+      onClose={() => setUnAssignPopupOpen(false)}
+    >
+      <DialogTitle id="crop-dialog-title">Unassign All Laboratory Confirmation</DialogTitle>
+      <DialogContent dividers style={{ position: 'relative' }}>
+        <DialogContentText id="alert-dialog-description">
+          Confirm to Unassign All Laboratory From Students
+        </DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button
+          onClick={() => setUnAssignPopupOpen(false)}
+          startIcon={<Iconify icon="eva:close-outline" />}
+        >
+          Cancel
+        </Button>
+        <LoadingButton
+          color="error"
+          variant="contained"
+          onClick={handleUnAssignAll}
+          startIcon={<Iconify icon="material-symbols:playlist-remove" />}
+          loading={loading.value}
+        >
+          Confirm
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
+
   if (isLoading) {
     return <SplashScreen />;
   }
@@ -103,7 +152,7 @@ export default function AssignLabsListView() {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <Typography variant="h6" color="error">
-          Error loading students.
+          Student not found
         </Typography>
       </Box>
     );
@@ -133,15 +182,27 @@ export default function AssignLabsListView() {
               <Label>{students?.length}</Label>
             </Stack>
 
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="ic:outline-auto-awesome" />}
-              onClick={() => {
-                setPopupOpen(true);
-              }}
-            >
-              Random Assign
-            </Button>
+            <Stack spacing={2} direction="row">
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<Iconify icon="material-symbols:playlist-remove" />}
+                onClick={() => {
+                  setUnAssignPopupOpen(true);
+                }}
+              >
+                Unassign All
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="ic:outline-auto-awesome" />}
+                onClick={() => {
+                  setPopupOpen(true);
+                }}
+              >
+                Random Assign
+              </Button>
+            </Stack>
           </Stack>
 
           <AssignLabsList students={students} />
@@ -149,6 +210,8 @@ export default function AssignLabsListView() {
       </Container>
 
       {renderRandomConfirmation}
+
+      {renderUnAssignAllConfirmation}
     </>
   );
 }
