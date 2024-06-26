@@ -45,6 +45,45 @@ const steps = ['Lab Info', 'Test Case', 'Summary'];
 
 // ----------------------------------------------------------------------
 
+const stripHtmlTags = (html) => {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || div.innerText || '';
+};
+
+const labInfoSchema = Yup.object().shape({
+  labTitle: Yup.string()
+    .required('Lab Title is required')
+    .max(80, 'Lab title must not exceed 80 characters'),
+  description: Yup.string().max(200, 'Lab description must not exceed 200 characters'),
+  problemStatement: Yup.string()
+    .required('Problem Statement is required')
+    .test('max', 'Lab Problem Statement must not exceed 2500 characters', (value) => {
+      const cleanedText = stripHtmlTags(value);
+      return cleanedText.length <= 2500;
+    }),
+});
+
+const testCaseSchema = Yup.object().shape({
+  testCases: Yup.array().of(
+    Yup.object().shape({
+      input: Yup.string().required('Input is required'),
+      expectedOutput: Yup.string().required('Expected Output is required'),
+    })
+  ),
+});
+
+const getValidationSchema = (step) => {
+  switch (step) {
+    case 0:
+      return labInfoSchema;
+    case 1:
+      return testCaseSchema;
+    default:
+      return labInfoSchema;
+  }
+};
+
 export default function LabNewEditForm({ currentLab }) {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
@@ -54,31 +93,6 @@ export default function LabNewEditForm({ currentLab }) {
   const { testCases, isTestCaseLoading, isTestCaseError } = useGetTestCasesByLaboratoryId(
     params.lid
   );
-
-  const stripHtmlTags = (html) => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || div.innerText || '';
-  };
-
-  const NewLabSchema = Yup.object().shape({
-    labTitle: Yup.string()
-      .required('Lab Title is required')
-      .max(80, 'Lab title must not exceed 80 characters'),
-    description: Yup.string().max(200, 'Lab description must not exceed 200 characters'),
-    problemStatement: Yup.string()
-      .required('Problem Statement is required')
-      .test('max', 'Lab Problem Statement must not exceed 2500 characters', (value) => {
-        const cleanedText = stripHtmlTags(value);
-        return cleanedText.length <= 2500;
-      }),
-    testCases: Yup.array().of(
-      Yup.object().shape({
-        input: Yup.string().required('Input is required'),
-        expectedOutput: Yup.string().required('Expected Output is required'),
-      })
-    ),
-  });
 
   const defaultValues = useMemo(
     () => ({
@@ -97,7 +111,7 @@ export default function LabNewEditForm({ currentLab }) {
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewLabSchema),
+    resolver: yupResolver(getValidationSchema(activeStep)),
     defaultValues,
   });
 
@@ -157,8 +171,12 @@ export default function LabNewEditForm({ currentLab }) {
 
   const handleNext = async () => {
     const isStepValid = await trigger();
+    console.log('Form values:', methods.getValues());
+    console.log('Validation result:', isStepValid);
     if (isStepValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } else {
+      console.log('Validation errors:', methods.formState.errors);
     }
   };
 

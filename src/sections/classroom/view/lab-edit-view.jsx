@@ -1,6 +1,5 @@
 'use client';
 
-import PropTypes from 'prop-types';
 import { useParams } from 'next/navigation';
 
 import Container from '@mui/material/Container';
@@ -15,10 +14,17 @@ import LabNewEditForm from '../lab-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function LabEditView({ lab }) {
+export default function LabEditView() {
   const params = useParams();
 
   const { laboratory } = useGetLaboratoryById(params.lid);
+
+  const truncateTitle = (title, maxLength) => {
+    if (!title) return '';
+    return title.length > maxLength ? `${title.slice(0, maxLength)}...` : title;
+  };
+
+  const truncatedLabTitle = truncateTitle(laboratory?.labTitle, 25);
 
   return (
     <Container maxWidth={false}>
@@ -29,7 +35,7 @@ export default function LabEditView({ lab }) {
             name: 'Conditional Programming (All lab)',
             href: paths.classroom.assignmentId(params.cid, params.aid),
           },
-          { name: 'Calculate tax' },
+          { name: truncatedLabTitle },
         ]}
         sx={{
           mb: 3,
@@ -39,7 +45,3 @@ export default function LabEditView({ lab }) {
     </Container>
   );
 }
-
-LabEditView.propTypes = {
-  lab: PropTypes.object,
-};
