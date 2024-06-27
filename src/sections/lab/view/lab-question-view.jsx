@@ -107,7 +107,11 @@ export default function LabQuestionView() {
     loading.onTrue();
     setResults([]);
     setComparedResults([]);
+
     try {
+      await updateSubmission(params.lid, currentLanguage, code);
+
+      const newResults = [];
       // eslint-disable-next-line no-restricted-syntax
       for (const testCase of testCases) {
         // eslint-disable-next-line no-await-in-loop
@@ -117,17 +121,18 @@ export default function LabQuestionView() {
           currentLanguage,
           code
         );
-        setResults((prevResult) => [...prevResult, response.data.output.trim()]);
+        newResults.push(response.data.output.trim());
       }
-      const comparisonResults = results.map((output, index) => ({
+
+      setResults(newResults);
+
+      const comparisonResults = newResults.map((output, index) => ({
         testCaseId: testCases[index].testCaseId,
         input: testCases[index].input,
         expectedOutput: testCases[index].expectedOutput,
         actualOutput: output,
         isEqual: output === testCases[index].expectedOutput,
       }));
-
-      console.log(comparisonResults);
 
       setComparedResults(comparisonResults);
       setCurrentTab('two');
@@ -204,7 +209,7 @@ export default function LabQuestionView() {
     });
   });
 
-  if (isLoading && isTestCaseLoading) {
+  if (isLoading || isTestCaseLoading) {
     return <SplashScreen />;
   }
 
