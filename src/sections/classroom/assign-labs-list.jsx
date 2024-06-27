@@ -2,9 +2,9 @@ import * as Yup from 'yup';
 import { mutate } from 'swr';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
-import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'next/navigation';
+import { useMemo, useState, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { LoadingButton } from '@mui/lab';
@@ -86,7 +86,20 @@ export default function AssignLabsList({ students }) {
     defaultValues,
   });
 
-  const { setValue, watch } = methods;
+  const { setValue, watch, reset } = methods;
+
+  // eslint-disable-next-line no-shadow
+  const generateDefaultValues = (students) => {
+    const values = {};
+    students?.forEach((student) => {
+      values[`labVersion-${student.studentId}`] = student.laboratoryId || '';
+    });
+    return values;
+  };
+
+  useEffect(() => {
+    reset(generateDefaultValues(students));
+  }, [students, reset]);
 
   const handleLabVersionChange = async (studentId, labId) => {
     loading.onTrue();
@@ -192,7 +205,7 @@ export default function AssignLabsList({ students }) {
                   <TableRow key={student.studentId}>
                     <TableCell sx={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
                       <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar sx={{ width: 36, height: 36 }}>
+                        <Avatar alt={student.firstName_EN} sx={{ width: 36, height: 36 }}>
                           {student.firstName_EN.charAt(0)}
                         </Avatar>
                         <Box
@@ -247,6 +260,7 @@ export default function AssignLabsList({ students }) {
                           setSelectedStudentId(student.studentId);
                           setPopupOpen(true);
                         }}
+                        disabled={!watch(`labVersion-${student.studentId}`)}
                       >
                         Unassign
                       </Button>

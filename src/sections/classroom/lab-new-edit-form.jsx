@@ -143,22 +143,22 @@ export default function LabNewEditForm({ currentLab }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (currentLab) {
-        await updateLaboratory(params.lid, data);
+        const response = await updateLaboratory(params.lid, data);
         await deleteAllTestCases(params.lid);
         // eslint-disable-next-line no-restricted-syntax
         for (const testCase of data.testCases) {
           // eslint-disable-next-line no-await-in-loop
           await createTestCase(params.lid, testCase);
         }
-        enqueueSnackbar('Update success!');
+        enqueueSnackbar(`${response.message}`);
       } else {
         const response = await createLaboratory(params.aid, data);
-        enqueueSnackbar('Create success!');
         // eslint-disable-next-line no-restricted-syntax
         for (const testCase of data.testCases) {
           // eslint-disable-next-line no-await-in-loop
           await createTestCase(response?.data?.laboratoryId, testCase);
         }
+        enqueueSnackbar(`${response.message}`);
       }
 
       reset();

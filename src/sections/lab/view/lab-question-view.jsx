@@ -12,14 +12,23 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
-import { Box, Stack, alpha, Button, MenuItem } from '@mui/material';
+import {
+  Box,
+  Stack,
+  alpha,
+  Button,
+  Tooltip,
+  MenuItem,
+  IconButton,
+  Typography,
+} from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { updateAndExecuteSubmission } from 'src/utils/axios';
+import { updateSubmission, updateAndExecuteSubmission } from 'src/utils/axios';
 
 import { useGetSubmissionsByLaboratoryId } from 'src/api/submission';
 import { useGetTestCasesByLaboratoryId } from 'src/api/useTestCases';
@@ -54,7 +63,8 @@ export default function LabQuestionView() {
 
   const loading = useBoolean(false);
 
-  const [result, setResult] = useState(null);
+  const [results, setResults] = useState([]);
+  const [comparedResults, setComparedResults] = useState([]);
 
   const isError = useBoolean(false);
 
@@ -66,12 +76,18 @@ export default function LabQuestionView() {
     params.lid
   );
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
   };
 
   const handleEditorChange = (value, event) => {
-    console.log('here is the current model value:', value);
+    if (value.length > 3000) {
+      setErrorMessage('Code cannot exceed 3000 characters');
+    } else {
+      setErrorMessage('');
+    }
   };
 
   const collapsePanel = () => {
@@ -83,7 +99,14 @@ export default function LabQuestionView() {
 
   const handleExecute = async () => {
     const code = editorRef?.current?.getValue();
+    if (code.length > 3000) {
+      enqueueSnackbar('Code cannot exceed 3000 characters', { variant: 'error' });
+      return;
+    }
+
     loading.onTrue();
+    setResults([]);
+    setComparedResults([]);
     try {
       // eslint-disable-next-line no-restricted-syntax
       for (const testCase of testCases) {
@@ -94,15 +117,38 @@ export default function LabQuestionView() {
           currentLanguage,
           code
         );
-        console.log(response.data);
+        setResults((prevResult) => [...prevResult, response.data.output.trim()]);
       }
-      // const response = await updateAndExecuteSubmission(params.lid, currentLanguage, code);
-      // const filteredOutput = response.data.output.split('\n').filter((line) => line.trim() !== '');
-      // setResult(filteredOutput);
-      // enqueueSnackbar(`${response.message}`, { variant: 'success' });
-      // // eslint-disable-next-line no-unused-expressions
-      // response.data.stdErr ? isError.onTrue() : isError.onFalse();
-      // setCurrentTab('two');
+      const comparisonResults = results.map((output, index) => ({
+        testCaseId: testCases[index].testCaseId,
+        input: testCases[index].input,
+        expectedOutput: testCases[index].expectedOutput,
+        actualOutput: output,
+        isEqual: output === testCases[index].expectedOutput,
+      }));
+
+      console.log(comparisonResults);
+
+      setComparedResults(comparisonResults);
+      setCurrentTab('two');
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
+    } finally {
+      loading.onFalse();
+    }
+  };
+
+  const handleUpdateCode = async () => {
+    const code = editorRef?.current?.getValue();
+    if (code.length > 3000) {
+      enqueueSnackbar('Code cannot exceed 3000 characters', { variant: 'error' });
+      return;
+    }
+    loading.onTrue();
+    try {
+      const response = await updateSubmission(params.lid, currentLanguage, code);
+      enqueueSnackbar(`${response.message}`, { variant: 'success' });
     } catch (error) {
       console.error(error);
       enqueueSnackbar(`${error.message}`, { variant: 'error' });
@@ -137,11 +183,14 @@ export default function LabQuestionView() {
 
   useEffect(() => {
     if (currentLanguage) {
+      loading.onTrue();
       reset({
         language: currentLanguage,
       });
-      mutate(`/submission?laboratoryId=${params.lid}`);
+      mutate(`api/v1/submission?laboratoryId=${params.lid}`);
+      loading.onFalse();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLanguage, params.lid, reset]);
 
   loader.init().then((monaco) => {
@@ -187,16 +236,32 @@ export default function LabQuestionView() {
           <ResizablePanelGroup direction="vertical" className="gap-2">
             <CustomResizablePanel defaultSize={60} className="bg-[#1B212A]">
               <Stack sx={{ height: '100%', position: 'relative' }}>
-                <FormProvider methods={methods}>
-                  <Stack sx={{ width: 'fit-content', mb: 1, minWidth: 112 }}>
-                    <RHFSelect name="language" onChange={handleLanguageChange}>
-                      <MenuItem value="JavaScript">JavaScript</MenuItem>
-                      <MenuItem value="Java">Java</MenuItem>
-                      <MenuItem value="Python">Python</MenuItem>
-                      <MenuItem value="C">C</MenuItem>
-                    </RHFSelect>
-                  </Stack>
-                </FormProvider>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{ p: 1, pr: 2 }}
+                >
+                  <FormProvider methods={methods}>
+                    <Stack sx={{ width: 'fit-content', minWidth: 112 }}>
+                      <RHFSelect
+                        name="language"
+                        onChange={handleLanguageChange}
+                        disabled={loading.value}
+                      >
+                        <MenuItem value="JavaScript">JavaScript</MenuItem>
+                        <MenuItem value="Java">Java</MenuItem>
+                        <MenuItem value="Python">Python</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                      </RHFSelect>
+                    </Stack>
+                  </FormProvider>
+                  <Tooltip title="Save" placement="top" arrow>
+                    <IconButton sx={{ height: 'fit-content' }} onClick={handleUpdateCode}>
+                      <Iconify icon="fluent:save-sync-20-regular" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
                 <Editor
                   options={{
                     minimap: {
@@ -223,6 +288,11 @@ export default function LabQuestionView() {
                     right: 18,
                   }}
                 >
+                  {errorMessage && (
+                    <Typography color="error" variant="caption" sx={{ p: 1 }}>
+                      {errorMessage}
+                    </Typography>
+                  )}
                   <LoadingButton
                     variant="outlined"
                     onClick={handleExecute}
@@ -247,8 +317,9 @@ export default function LabQuestionView() {
                 testCases={testCases}
                 currentTab={currentTab}
                 setCurrentTab={setCurrentTab}
-                result={result}
-                isCompileError={isError}
+                results={comparedResults}
+                isResultLoading={loading.value}
+                isCompileError={isError.value}
                 isTestCaseLoading={isTestCaseLoading}
                 isTestCaseError={isTestCaseError}
               />

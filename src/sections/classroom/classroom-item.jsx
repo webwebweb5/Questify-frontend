@@ -113,7 +113,7 @@ export default function ClassroomItem({ classroom }) {
         whileHover="hover"
         variants={varHover(1.02, 0.99)}
         underline="none"
-        sx={{ cursor: 'pointer' }}
+        sx={{ cursor: 'pointer', height: 'max-content' }}
       >
         <Tooltip title={title} placement="top" arrow>
           <Card
@@ -148,7 +148,7 @@ export default function ClassroomItem({ classroom }) {
                   </TextMaxLine>
                 }
                 secondary={
-                  <TextMaxLine variant="caption" line={2}>
+                  <TextMaxLine variant="caption" line={2} persistent>
                     {description}
                   </TextMaxLine>
                 }

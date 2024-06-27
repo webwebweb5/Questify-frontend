@@ -101,12 +101,13 @@ export default function AssignLabsListView() {
     try {
       const response = await unassignAllLaboratories(params.aid);
       enqueueSnackbar(`${response.message}`, { variant: 'success' });
+      mutate(`${endpoints.user.student}?assignmentId=${params.aid}`);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(`${error.message}`, { variant: 'error' });
     } finally {
       loading.onFalse();
-      setPopupOpen(false);
+      setUnAssignPopupOpen(false);
     }
   };
 

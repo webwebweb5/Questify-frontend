@@ -9,6 +9,7 @@ export const paths = {
   dashboard: {
     root: '/',
     classroom: '/classroom',
+    assignment: '/assignment',
   },
   // CLASSROOM
   classroom: {

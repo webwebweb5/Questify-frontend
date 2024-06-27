@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Pagination, { paginationClasses } from '@mui/material/Pagination';
 
-import { useCurrentRole } from 'src/hooks/use-current-role';
-
 import EmptyContent from 'src/components/empty-content';
 import { varFade, MotionContainer } from 'src/components/animate';
 
@@ -21,8 +19,6 @@ const maxPerPage = 12;
 export default function ClassroomList({ classrooms }) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const role = useCurrentRole();
-
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
   };
@@ -31,12 +27,7 @@ export default function ClassroomList({ classrooms }) {
   const currentClassrooms = classrooms.slice(startIndex, startIndex + maxPerPage);
 
   if (classrooms.length === 0) {
-    const message =
-      role === 'ProfAcc'
-        ? 'No classrooms found. Please create a new classroom to get started.'
-        : 'No classrooms found. Please join a classroom to get started.';
-
-    return <EmptyContent filled title={message} sx={{ my: 3, py: 10 }} />;
+    return <EmptyContent filled title="Classroom not found" sx={{ my: 3, py: 10 }} />;
   }
 
   return (

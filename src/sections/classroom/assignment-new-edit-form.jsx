@@ -64,6 +64,9 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
     gradingCriteria: Yup.string()
       .required('Grading method is required')
       .oneOf(['AUTO', 'MANUAL', 'NOT_GRADE'], 'Invalid grading method'),
+    status: Yup.string()
+      .required('Status is required')
+      .oneOf(['PUBLISH', 'DRAFT'], 'Invalid status'),
   });
 
   const defaultValues = useMemo(
@@ -74,6 +77,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
       startTime: currentAssignment?.startTime ? new Date(currentAssignment.startTime) : new Date(),
       endTime: currentAssignment?.endTime ? new Date(currentAssignment.endTime) : null,
       gradingCriteria: currentAssignment?.gradingCriteria || '',
+      status: currentAssignment?.status || '',
     }),
     [currentAssignment]
   );
@@ -179,6 +183,11 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
               <MenuItem value="NOT_GRADE">NOT_GRADE</MenuItem>
             </RHFSelect>
 
+            <RHFSelect name="status" label="Status">
+              <MenuItem value="PUBLISH">PUBLISH</MenuItem>
+              <MenuItem value="DRAFT">DRAFT</MenuItem>
+            </RHFSelect>
+
             <Stack direction="row">
               <RHFSwitch name="isRestrict" label="Restriction" />
               <Tooltip
@@ -231,5 +240,6 @@ AssignmentNewEditForm.propTypes = {
     startTime: PropTypes.string,
     endTime: PropTypes.string,
     gradingCriteria: PropTypes.oneOf(['AUTO', 'MANUAL', 'NOT_GRADE']),
+    status: PropTypes.oneOf(['PUBLISH', 'DRAFT']),
   }),
 };

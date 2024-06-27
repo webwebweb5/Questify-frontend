@@ -1,9 +1,8 @@
+/* eslint-disable no-nested-ternary */
 import PropTypes from 'prop-types';
 import { useState, useCallback } from 'react';
 
 import { Box, Tab, Tabs, Stack, styled, Typography } from '@mui/material';
-
-import { useAuthContext } from 'src/auth/hooks';
 
 import Iconify from 'src/components/iconify';
 
@@ -57,12 +56,12 @@ export default function LabTestCase({
   testCases,
   currentTab,
   setCurrentTab,
-  result,
+  results,
+  isResultLoading,
   isCompileError,
   isTestCaseLoading,
   isTestCaseError,
 }) {
-  const { user } = useAuthContext();
   const [currentTestCaseTab, setCurrentTestCaseTab] = useState(0);
 
   const handleChangeTab = useCallback(
@@ -123,71 +122,62 @@ export default function LabTestCase({
             ))}
           </Stack>
         </>
-      ) : (
-        currentTab === 'two' && (
-          // <Stack sx={{ px: 2, pb: 2 }}>
-          //   <Typography variant="h4" color="success.main" sx={{ py: 2, pt: 1 }}>
-          //     Accepted
-          //   </Typography>
-          //   <Stack>
-          //     <CustomTabs value={currentTestCaseTab} onChange={handleChangeTestCaseTab}>
-          //       <CustomTab
-          //         value={0}
-          //         label={
-          //           <Stack direction="row" alignItems="center" spacing={1}>
-          //             <Iconify icon="line-md:check-all" sx={{ color: 'primary.main' }} /> Case 1
-          //           </Stack>
-          //         }
-          //       />
-          //     </CustomTabs>
-          //   </Stack>
-          //   <Stack>
-          //     <Box>
-          //       <Stack spacing={1}>
-          //         <Typography variant="subtitle2">Input =</Typography>
-          //         <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>5</Box>
-          //         <Typography variant="subtitle2">Expected Output =</Typography>
-          //         <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>120</Box>
-          //         <Typography variant="subtitle2">Output =</Typography>
-          //         <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A', color: 'success.main' }}>
-          //           120
-          //         </Box>
-          //       </Stack>
-          //     </Box>
-          //   </Stack>
-          // </Stack>
-          <Stack sx={{ px: 2, pb: 2 }}>
-            <Typography variant="h4" color="error.main" sx={{ py: 2, pt: 1 }}>
-              Failed
-            </Typography>
-            <Stack>
-              <CustomTabs value={currentTestCaseTab} onChange={handleChangeTestCaseTab}>
+      ) : currentTab === 'two' && results.length !== 0 ? (
+        <Stack sx={{ px: 2, pb: 2 }}>
+          <Typography
+            variant="h4"
+            color={results[currentTestCaseTab].isEqual ? 'success.main' : 'error.main'}
+            sx={{ py: 1 }}
+          >
+            {results[currentTestCaseTab].isEqual ? 'Accepted' : 'Failed'}
+          </Typography>
+          <Stack>
+            <CustomTabs value={currentTestCaseTab} onChange={handleChangeTestCaseTab}>
+              {results.map((result, index) => (
                 <CustomTab
-                  value={0}
+                  key={result.testCaseId}
+                  value={index}
                   label={
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Iconify icon="line-md:close-small" sx={{ color: 'error.main' }} /> Case 1
+                      <Iconify
+                        icon={result.isEqual ? 'line-md:check-all' : 'line-md:close-small'}
+                        sx={{ color: result.isEqual ? 'primary.main' : 'error.main' }}
+                      />
+                      Case {index + 1}
                     </Stack>
                   }
                 />
-              </CustomTabs>
-            </Stack>
-            <Stack>
-              <Box>
-                <Stack spacing={1}>
-                  <Typography variant="subtitle2">Input =</Typography>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>5</Box>
-                  <Typography variant="subtitle2">Expected Output =</Typography>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>120</Box>
-                  <Typography variant="subtitle2">Output =</Typography>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A', color: 'error.main' }}>
-                    60
-                  </Box>
-                </Stack>
-              </Box>
-            </Stack>
+              ))}
+            </CustomTabs>
           </Stack>
-        )
+          <Stack>
+            <Box>
+              <Stack spacing={1}>
+                <Typography variant="subtitle2">Input =</Typography>
+                <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>
+                  {results[currentTestCaseTab].input}
+                </Box>
+                <Typography variant="subtitle2">Expected Output =</Typography>
+                <Box sx={{ p: 2, borderRadius: 1, bgcolor: '#1B212A' }}>
+                  {results[currentTestCaseTab].expectedOutput}
+                </Box>
+                <Typography variant="subtitle2">Output =</Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    borderRadius: 1,
+                    bgcolor: '#1B212A',
+                    color: results[currentTestCaseTab].isEqual ? 'success.main' : 'error.main',
+                  }}
+                >
+                  {results[currentTestCaseTab].actualOutput}
+                </Box>
+              </Stack>
+            </Box>
+          </Stack>
+        </Stack>
+      ) : (
+        <Typography variant="subtitle2">You must run your code first</Typography>
       )}
     </>
   );
@@ -197,7 +187,8 @@ LabTestCase.propTypes = {
   testCases: PropTypes.array,
   currentTab: PropTypes.string,
   setCurrentTab: PropTypes.func,
-  result: PropTypes.array,
+  results: PropTypes.array,
+  isResultLoading: PropTypes.bool,
   isCompileError: PropTypes.bool,
   isTestCaseLoading: PropTypes.bool,
   isTestCaseError: PropTypes.bool,

@@ -42,6 +42,7 @@ const ICONS = {
   dashboard: icon('ic_dashboard'),
   home: <Iconify icon="carbon:home" sx={{ width: 1, height: 1 }} />,
   classroom: <Iconify icon="fluent:share-screen-person-24-regular" sx={{ width: 1, height: 1 }} />,
+  assignment: <Iconify icon="carbon:result" sx={{ width: 1, height: 1 }} />,
 };
 
 // ----------------------------------------------------------------------
@@ -56,6 +57,7 @@ export function useNavData() {
         items: [
           { title: 'Home', path: paths.dashboard.root, icon: ICONS.home },
           { title: 'Classroom', path: paths.dashboard.classroom, icon: ICONS.classroom },
+          { title: 'Assignment', path: paths.dashboard.assignment, icon: ICONS.assignment },
         ],
       },
     ],

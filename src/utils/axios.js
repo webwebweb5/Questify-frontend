@@ -185,21 +185,19 @@ export const updateAndExecuteSubmission = async (laboratoryId, testCaseId, langu
   );
   return res.data;
 };
-// export const updateAndExecuteSubmission = async (laboratoryId, language, code) => {
-//   await axiosInstance.put(
-//     `/api/v1/submission?laboratoryId=${laboratoryId}&language=${language}`,
-//     code,
-//     {
-//       headers: {
-//         'Content-Type': 'text/plain',
-//       },
-//     }
-//   );
-//   const res = await axiosInstance.post(
-//     `/api/v1/submission/execute?language=${language}&laboratoryId=${laboratoryId}`
-//   );
-//   return res.data;
-// };
+
+export const updateSubmission = async (laboratoryId, language, code) => {
+  const res = await axiosInstance.put(
+    `/api/v1/submission?laboratoryId=${laboratoryId}&language=${language}`,
+    code,
+    {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    }
+  );
+  return res.data;
+};
 
 // ----------------------------------------------------------------------
 

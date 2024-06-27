@@ -52,7 +52,8 @@ export default function LabListView() {
             Due to {`${fDateTime(assignment?.startTime)}` || 'none'}
           </TextMaxLine>
         </Stack>
-        {role === 'ProfAcc' ? (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {role === 'ProfAcc' && laboratories?.length !== 0 ? (
           <Button
             variant="contained"
             color="primary"
@@ -62,14 +63,14 @@ export default function LabListView() {
           >
             Assign Labs
           </Button>
-        ) : (
+        ) : role !== 'ProfAcc' && laboratories?.length !== 0 ? (
           <Stack>
             <Typography variant="subtitle1">Points</Typography>
             <TextMaxLine variant="body1" sx={{ color: 'text.secondary' }}>
               0/10
             </TextMaxLine>
           </Stack>
-        )}
+        ) : null}
       </Stack>
 
       <Typography variant="body2" sx={{ my: 3 }}>

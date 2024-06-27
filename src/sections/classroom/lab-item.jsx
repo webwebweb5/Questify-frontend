@@ -252,6 +252,16 @@ export default function LabItem({ lab, index }) {
         >
           <MenuItem
             onClick={() => {
+              router.push(paths.lab.question(lab.laboratoryId));
+            }}
+            sx={{ color: 'primary.main' }}
+          >
+            <Iconify icon="carbon:play-filled-alt" />
+            Test Lab
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
               popover.onClose();
               router.push(paths.classroom.assignmentLabEdit(params.cid, params.aid, laboratoryId));
             }}
