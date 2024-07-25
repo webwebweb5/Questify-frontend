@@ -105,7 +105,7 @@ export default function ClassroomNewEditForm({ currentClassroom }) {
           <Stack spacing={3} sx={{ p: 3 }}>
             <RHFTextField
               name="title"
-              label="Classroom Name"
+              label="Classroom Title"
               placeholder="e.g. 953881 - Software Engineer"
             />
 

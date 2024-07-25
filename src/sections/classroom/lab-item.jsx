@@ -33,6 +33,8 @@ import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import { deleteLaboratory } from 'src/utils/axios';
 
+import { useGetTestCasesByLaboratoryId } from 'src/api/useTestCases';
+
 import Iconify from 'src/components/iconify';
 import Markdown from 'src/components/markdown';
 import { varFade } from 'src/components/animate';
@@ -49,6 +51,9 @@ const truncateDescription = (description, maxLength) => {
 
 export default function LabItem({ lab, index }) {
   const { laboratoryId, labTitle, description, problemStatement, professor } = lab;
+
+  const { testCases, isTestCaseLoading, isTestCaseError } =
+    useGetTestCasesByLaboratoryId(laboratoryId);
 
   const role = useCurrentRole();
 
@@ -89,6 +94,29 @@ export default function LabItem({ lab, index }) {
           {labTitle}
         </Typography>
         <Markdown children={problemStatement} />
+        <Box
+          sx={{ my: 2 }}
+          gap={2}
+          display="grid"
+          gridTemplateColumns={{
+            xs: 'repeat(1, 1fr)',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+          }}
+        >
+          {testCases?.map((testCase, i) => (
+            <Card key={i} sx={{ bgcolor: '#1B212A' }}>
+              <Stack spacing={0.5} sx={{ p: 2.5, px: 3, pr: 2.5 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Typography variant="h6">{`Test Case ${i + 1}`}</Typography>
+                </Stack>
+                <Divider sx={{ borderStyle: 'dashed', mb: 1 }} />
+                <Typography variant="body2">{`Input: ${testCase.input}`}</Typography>
+                <Typography variant="body2">{`Expected Output: ${testCase.expectedOutput}`}</Typography>
+              </Stack>
+            </Card>
+          ))}
+        </Box>
       </DialogContent>
 
       <DialogActions>
@@ -98,17 +126,14 @@ export default function LabItem({ lab, index }) {
         >
           Close
         </Button>
-        {role !== 'ProfAcc' && (
-          <LoadingButton
-            color="primary"
-            variant="contained"
-            onClick={() => router.push(paths.lab.question(laboratoryId))}
-            startIcon={<Iconify icon="carbon:play-filled-alt" />}
-            // loading={loading.value}
-          >
-            Start Lab
-          </LoadingButton>
-        )}
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => router.push(paths.lab.question(laboratoryId))}
+          startIcon={<Iconify icon="carbon:play-filled-alt" />}
+        >
+          Test Lab
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -201,14 +226,14 @@ export default function LabItem({ lab, index }) {
               }}
             />
 
-            <Stack
+            {/* <Stack
               spacing={1}
               direction="row"
               sx={{ color: 'primary.main', typography: 'caption' }}
             >
               <Iconify width={16} icon="mdi:medal-outline" />
               <Typography variant="caption">Score 10</Typography>
-            </Stack>
+            </Stack> */}
 
             <Stack
               spacing={1}

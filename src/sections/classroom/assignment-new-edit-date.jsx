@@ -30,6 +30,7 @@ export default function AssignmentNewEditDate({ disableStartTime }) {
               textField: {
                 fullWidth: true,
                 error: !!error,
+                // helperText: error?.message,
                 helperText: disableStartTime
                   ? 'Start time cannot be changed when the assignment is already started'
                   : error?.message,

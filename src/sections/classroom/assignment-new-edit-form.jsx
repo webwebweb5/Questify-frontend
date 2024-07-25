@@ -8,10 +8,9 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Unstable_Grid2';
-import IconButton from '@mui/material/IconButton';
+import { Button, MenuItem } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
-import { Button, Tooltip, MenuItem } from '@mui/material';
 
 import { useParams, useRouter } from 'src/routes/hooks';
 
@@ -19,9 +18,8 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { createAssignment, updateAssignment } from 'src/utils/axios';
 
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFSelect, RHFSwitch, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 
 import AssignmentNewEditDate from './assignment-new-edit-date';
 
@@ -49,8 +47,8 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         const today = new Date();
         const startTime = new Date(value);
         today.setHours(0, 0, 0, 0);
-        if (new Date(currentAssignment?.startTime) < new Date()) {
-          return startTime <= today;
+        if (currentAssignment?.startTime) {
+          return true;
         }
         return startTime >= today;
       }),
@@ -103,6 +101,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
         startTime: st,
         endTime: et,
         gradingCriteria: currentAssignment.gradingCriteria,
+        status: currentAssignment.status,
       });
     }
   }, [currentAssignment, reset]);
@@ -115,6 +114,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
           description: data.description,
           startTime: convertTime(data.startTime),
           endTime: convertTime(data.endTime),
+          status: data.status,
         });
         enqueueSnackbar(`${response.message}`);
       } else {
@@ -123,6 +123,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
           description: data.description,
           startTime: convertTime(data.startTime),
           endTime: convertTime(data.endTime),
+          status: data.status,
         });
         console.log(response);
         enqueueSnackbar(`${response.message}`);
@@ -188,7 +189,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
               <MenuItem value="DRAFT">DRAFT</MenuItem>
             </RHFSelect>
 
-            <Stack direction="row">
+            {/* <Stack direction="row">
               <RHFSwitch name="isRestrict" label="Restriction" />
               <Tooltip
                 title="Prevent students from copying and pasting code!"
@@ -199,7 +200,7 @@ export default function AssignmentNewEditForm({ currentAssignment }) {
                   <Iconify icon="ph:question" />
                 </IconButton>
               </Tooltip>
-            </Stack>
+            </Stack> */}
           </Stack>
         </Card>
       </Grid>

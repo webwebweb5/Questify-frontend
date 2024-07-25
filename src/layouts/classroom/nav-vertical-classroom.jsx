@@ -71,12 +71,12 @@ export default function NavVerticalClassroom({ openNav, onCloseNav }) {
       </Button>
 
       <Avatar
-        alt={classroom?.title?.charAt(0)}
+        alt={classroom?.title?.charAt(0).toUpperCase()}
         src=""
         variant="rounded"
         sx={{ width: 58, height: 58, mb: 1, mt: 3, ml: 3 }}
       >
-        {classroom?.title?.charAt(0)}
+        {classroom?.title?.charAt(0).toUpperCase()}
       </Avatar>
 
       <Typography variant="h6" sx={{ mt: 1, ml: 3, mr: 1 }}>

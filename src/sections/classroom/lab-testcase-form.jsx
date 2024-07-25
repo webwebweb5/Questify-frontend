@@ -14,9 +14,16 @@ export default function LabTestCaseForm() {
   return (
     <Card>
       <CardHeader title="Test Case" />
-      <Typography variant="subtitle2" color="text.disabled" sx={{ px: 3 }}>
-        (Max 3 Test Cases)*
-      </Typography>
+      <Stack direction="row" justifyContent="space-between" sx={{ px: 3 }}>
+        <Typography variant="subtitle2" color="text.disabled">
+          (Max 3 Test Cases)*
+        </Typography>
+        {/* <Tooltip title="2 7 11 15 -> [2,7,11,15]" placement="top" arrow>
+          <IconButton color="inherit" sx={{ ml: -1 }}>
+            <Iconify icon="ph:question" />
+          </IconButton>
+        </Tooltip> */}
+      </Stack>
 
       <Stack spacing={3} sx={{ p: 3 }}>
         {fields.map((item, index) => (

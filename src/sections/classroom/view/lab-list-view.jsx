@@ -65,10 +65,10 @@ export default function LabListView() {
           </Button>
         ) : role !== 'ProfAcc' && laboratories?.length !== 0 ? (
           <Stack>
-            <Typography variant="subtitle1">Points</Typography>
+            {/* <Typography variant="subtitle1">Points</Typography>
             <TextMaxLine variant="body1" sx={{ color: 'text.secondary' }}>
               0/10
-            </TextMaxLine>
+            </TextMaxLine> */}
           </Stack>
         ) : null}
       </Stack>

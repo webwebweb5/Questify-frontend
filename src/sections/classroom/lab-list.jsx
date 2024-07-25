@@ -19,7 +19,7 @@ export default function LabList({ labs }) {
   const role = useCurrentRole();
 
   if (labs.length === 0) {
-    return <EmptyContent filled title="Laboratory not found" sx={{ my: 3, py: 2 }} />;
+    return <EmptyContent filled title="Laboratory not found" sx={{ my: 3, py: 0 }} />;
   }
 
   return (

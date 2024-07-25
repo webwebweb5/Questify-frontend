@@ -14,7 +14,7 @@ export default function LabProblemForm() {
         </Stack>
 
         <Stack spacing={1.5}>
-          <Typography variant="subtitle2">Sub Description (Optional)</Typography>
+          <Typography variant="subtitle2">Description</Typography>
           <RHFTextField name="description" placeholder="e.g. This is lab" multiline rows={3} />
         </Stack>
 

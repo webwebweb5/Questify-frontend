@@ -30,6 +30,7 @@ import {
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { useCurrentRole } from 'src/hooks/use-current-role';
 
 import { removeStudentFromClassroom } from 'src/utils/axios';
 
@@ -61,6 +62,8 @@ export default function MemberList({ users }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const params = useParams();
+
+  const role = useCurrentRole();
 
   const OnRemoveStudent = async () => {
     if (!selectedStudent) return;
@@ -175,14 +178,16 @@ export default function MemberList({ users }) {
                     <Typography>{user.email}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton
-                      onClick={(e) => {
-                        popover.onOpen(e);
-                        setSelectedStudent(user);
-                      }}
-                    >
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
+                    {role === 'ProfAcc' && (
+                      <IconButton
+                        onClick={(e) => {
+                          popover.onOpen(e);
+                          setSelectedStudent(user);
+                        }}
+                      >
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

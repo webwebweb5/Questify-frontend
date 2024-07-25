@@ -55,7 +55,9 @@ const labInfoSchema = Yup.object().shape({
   labTitle: Yup.string()
     .required('Lab Title is required')
     .max(80, 'Lab title must not exceed 80 characters'),
-  description: Yup.string().max(200, 'Lab description must not exceed 200 characters'),
+  description: Yup.string()
+    .required('Description is required')
+    .max(200, 'Lab description must not exceed 200 characters'),
   problemStatement: Yup.string()
     .required('Problem Statement is required')
     .test('max', 'Lab Problem Statement must not exceed 2500 characters', (value) => {
@@ -67,8 +69,12 @@ const labInfoSchema = Yup.object().shape({
 const testCaseSchema = Yup.object().shape({
   testCases: Yup.array().of(
     Yup.object().shape({
-      input: Yup.string().required('Input is required'),
-      expectedOutput: Yup.string().required('Expected Output is required'),
+      input: Yup.string()
+        .required('Input is required')
+        .max(100, 'Test case input must not exceed 100 characters'),
+      expectedOutput: Yup.string()
+        .required('Expected Output is required')
+        .max(100, 'Test case expected output must not exceed 100 characters'),
     })
   ),
 });

@@ -27,7 +27,7 @@ export default function AssignmentList({ assignments }) {
   const currentAssignments = assignments.slice(startIndex, startIndex + maxPerPage);
 
   if (assignments.length === 0) {
-    return <EmptyContent filled title="No assignments found!" sx={{ my: 3, py: 10 }} />;
+    return <EmptyContent filled title="Assignment not found" sx={{ my: 3, py: 10 }} />;
   }
   return (
     <>

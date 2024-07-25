@@ -68,7 +68,7 @@ export default function LabQuestionView() {
 
   const isError = useBoolean(false);
 
-  const [currentLanguage, setCurrentLanguage] = useState('JavaScript');
+  const [currentLanguage, setCurrentLanguage] = useState('Java');
 
   const [currentTab, setCurrentTab] = useState('one');
 
@@ -112,6 +112,7 @@ export default function LabQuestionView() {
       await updateSubmission(params.lid, currentLanguage, code);
 
       const newResults = [];
+      let alert = '';
       // eslint-disable-next-line no-restricted-syntax
       for (const testCase of testCases) {
         // eslint-disable-next-line no-await-in-loop
@@ -121,6 +122,7 @@ export default function LabQuestionView() {
           currentLanguage,
           code
         );
+        alert = response.message;
         newResults.push(response.data.output.trim());
       }
 
@@ -135,6 +137,7 @@ export default function LabQuestionView() {
       }));
 
       setComparedResults(comparisonResults);
+      enqueueSnackbar(`${alert}`, { variant: 'success' });
       setCurrentTab('two');
     } catch (error) {
       console.error(error);
@@ -254,8 +257,8 @@ export default function LabQuestionView() {
                         onChange={handleLanguageChange}
                         disabled={loading.value}
                       >
-                        <MenuItem value="JavaScript">JavaScript</MenuItem>
                         <MenuItem value="Java">Java</MenuItem>
+                        <MenuItem value="JavaScript">JavaScript</MenuItem>
                         <MenuItem value="Python">Python</MenuItem>
                         <MenuItem value="C">C</MenuItem>
                       </RHFSelect>
@@ -278,7 +281,7 @@ export default function LabQuestionView() {
                   }}
                   theme="myTheme"
                   defaultLanguage={currentLanguage.toLowerCase()}
-                  defaultValue={submissions?.codeSnippets?.JavaScript || ''}
+                  defaultValue={submissions?.codeSnippets?.Java || ''}
                   language={currentLanguage.toLowerCase()}
                   value={submissions?.codeSnippets?.[currentLanguage]}
                   onMount={handleEditorDidMount}
